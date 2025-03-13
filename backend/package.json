@@ -1,0 +1,23 @@
+{
+  "name": "esportsedge-backend",
+  "version": "1.0.0",
+  "description": "EsportsEdge API - Node.js + Express + MongoDB",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node scripts/seed.js",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5"
+  }
+}
