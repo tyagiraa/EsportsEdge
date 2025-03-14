@@ -1,0 +1,60 @@
+.player-form {
+  max-width: 400px;
+}
+
+.player-form__error {
+  color: #e66;
+  margin-bottom: 0.75rem;
+}
+
+.player-form__row {
+  margin-bottom: 0.75rem;
+}
+
+.player-form__row label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  color: #aaa;
+}
+
+.player-form__row input,
+.player-form__row textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #1a1a2e;
+  color: #ddd;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.player-form__row textarea {
+  resize: vertical;
+}
+
+.player-form__actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.player-form__actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background: #16213e;
+  color: #ddd;
+  cursor: pointer;
+  font: inherit;
+}
+
+.player-form__actions button[type="submit"] {
+  background: #1f3460;
+  color: #fff;
+}
+
+.player-form__actions button:hover {
+  opacity: 0.9;
+}

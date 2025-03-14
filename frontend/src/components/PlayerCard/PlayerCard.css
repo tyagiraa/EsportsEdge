@@ -1,0 +1,58 @@
+.player-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #1a1a2e;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.player-card__info {
+  flex: 1;
+}
+
+.player-card__name {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+}
+
+.player-card__name a {
+  color: #7eb8da;
+  text-decoration: none;
+}
+
+.player-card__name a:hover {
+  text-decoration: underline;
+}
+
+.player-card__username {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.player-card__game {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: #aaa;
+}
+
+.player-card__actions {
+  margin-left: 1rem;
+}
+
+.player-card__btn {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  background: #16213e;
+  color: #ccc;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.player-card__btn:hover {
+  background: #1f3460;
+  color: #fff;
+}
