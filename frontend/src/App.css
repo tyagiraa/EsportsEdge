@@ -1,0 +1,120 @@
+main {
+  padding: 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #1a1a1a;
+  color: #ddd;
+}
+
+.page-error {
+  color: #e66;
+  margin-bottom: 1rem;
+}
+
+.muted {
+  color: #888;
+  margin-top: -0.5rem;
+}
+
+.home ul {
+  list-style: none;
+  padding: 0;
+}
+
+.home li {
+  margin-bottom: 0.5rem;
+}
+
+.home a {
+  color: #7eb8da;
+  text-decoration: none;
+}
+
+.home a:hover {
+  text-decoration: underline;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+}
+
+.form-section h2 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-list > li {
+  margin-bottom: 0.5rem;
+}
+
+.item-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+.item-actions button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  background: #333;
+  color: #aaa;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.item-actions button:hover {
+  color: #fff;
+}
+
+.matches-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: #2a2a2a;
+  border-radius: 6px;
+}
+
+.matches-filters label {
+  font-size: 0.875rem;
+  color: #aaa;
+}
+
+.matches-filters select,
+.matches-filters input[type="date"] {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #1a1a1a;
+  color: #ddd;
+  font: inherit;
+}
+
+.matches-filters button {
+  padding: 0.4rem 0.75rem;
+  background: #333;
+  color: #ccc;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.matches-filters button:hover {
+  color: #fff;
+}
