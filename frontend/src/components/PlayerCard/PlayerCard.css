@@ -2,10 +2,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
-  background: #020617;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
+  padding: 0.86rem 1rem;
+  background: var(--card-bg);
+  border-radius: 10px;
+  margin-bottom: 0.55rem;
   border: 1px solid rgba(51, 65, 85, 0.9);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
   transition:
@@ -26,7 +26,8 @@
 
 .player-card__name {
   margin: 0 0 0.25rem 0;
-  font-size: 1rem;
+  font-size: 1.03rem;
+  line-height: 1.35;
 }
 
 .player-card__name a {
@@ -41,13 +42,13 @@
 .player-card__username {
   margin: 0;
   font-size: 0.875rem;
-  color: var(--muted2);
+  color: var(--muted);
 }
 
 .player-card__game {
-  margin: 0.25rem 0 0 0;
+  margin: 0.28rem 0 0 0;
   font-size: 0.875rem;
-  color: var(--muted);
+  color: var(--muted2);
 }
 
 .player-card__actions {
@@ -56,15 +57,39 @@
 
 .player-card__btn {
   display: inline-block;
-  padding: 0.35rem 0.75rem;
-  background: #16213e;
-  color: #ccc;
+  padding: 0.4rem 0.78rem;
+  background: rgba(15, 23, 42, 0.78);
+  color: var(--text);
   text-decoration: none;
-  border-radius: 4px;
+  border: 1px solid rgba(51, 65, 85, 0.9);
+  border-radius: 8px;
+  font-weight: 600;
   font-size: 0.875rem;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease,
+    transform 120ms ease;
 }
 
 .player-card__btn:hover {
-  background: #1f3460;
-  color: #fff;
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.55);
+  transform: translateY(-1px);
+}
+
+.player-card__btn:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.7);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .player-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .player-card__actions {
+    margin-left: 0;
+  }
 }

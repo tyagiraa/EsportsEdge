@@ -1,7 +1,7 @@
 .stats-panel {
   padding: 1rem;
-  background: #020617;
-  border-radius: 6px;
+  background: var(--card-bg);
+  border-radius: 10px;
   margin-bottom: 1rem;
   border: 1px solid rgba(51, 65, 85, 0.9);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
@@ -9,8 +9,9 @@
 
 .stats-panel__title {
   margin: 0 0 0.75rem 0;
-  font-size: 1rem;
-  color: var(--muted);
+  font-size: 1.03rem;
+  color: #dbeafe;
+  letter-spacing: 0.01em;
 }
 
 .stats-panel__list {
@@ -27,11 +28,12 @@
 
 .stats-panel__term {
   margin: 0;
-  color: var(--muted2);
-  font-weight: 500;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .stats-panel__value {
   margin: 0;
-  color: #ddd;
+  color: #f3f4f6;
+  font-weight: 600;
 }
