@@ -20,6 +20,8 @@ router.post('/register', async (req, res) => {
     const existingUser = await db.collection('users').findOne({ username: normalizedUsername });
     if (existingUser) return res.status(409).json({ error: 'Username already exists' });
 
+    const existingPlayer = await db.collection('players').findOne({ username: normalizedUsername });
+
     const passwordHash = await bcrypt.hash(String(password), 10);
     const userResult = await db.collection('users').insertOne({
       username: normalizedUsername,
@@ -28,21 +30,48 @@ router.post('/register', async (req, res) => {
     });
 
     const userId = userResult.insertedId;
-    const playerResult = await db.collection('players').insertOne({
-      username: normalizedUsername,
-      displayName: String(displayName),
-      email: String(email),
-      favoriteGame: favoriteGame || null,
-      bio: bio || null,
-      userId,
-      createdAt: new Date(),
-    });
+
+    let playerId;
+    let playerDoc;
+    if (existingPlayer) {
+      playerId = existingPlayer._id;
+      await db.collection('players').updateOne(
+        { _id: playerId },
+        {
+          $set: {
+            displayName: String(displayName),
+            email: String(email),
+            favoriteGame: favoriteGame || null,
+            bio: bio || null,
+            userId,
+          },
+        }
+      );
+      playerDoc = await db.collection('players').findOne({ _id: playerId });
+    } else {
+      const playerResult = await db.collection('players').insertOne({
+        username: normalizedUsername,
+        displayName: String(displayName),
+        email: String(email),
+        favoriteGame: favoriteGame || null,
+        bio: bio || null,
+        userId,
+        createdAt: new Date(),
+      });
+      playerId = playerResult.insertedId;
+      playerDoc = await db.collection('players').findOne({ _id: playerId });
+    }
 
     req.logIn({ _id: userId, username: normalizedUsername }, (loginErr) => {
       if (loginErr) return res.status(500).json({ error: 'Login failed' });
       return res.status(201).json({
         user: { _id: userId, username: normalizedUsername },
-        player: { _id: playerResult.insertedId, username: normalizedUsername, displayName, email },
+        player: {
+          _id: playerId,
+          username: normalizedUsername,
+          displayName: playerDoc?.displayName || String(displayName),
+          email: playerDoc?.email || String(email),
+        },
       });
     });
   } catch (err) {
