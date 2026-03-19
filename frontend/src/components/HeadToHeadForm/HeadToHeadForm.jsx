@@ -16,7 +16,9 @@ function HeadToHeadForm({
   const sortedPlayers = useMemo(
     () =>
       [...(players || [])].sort((a, b) =>
-        String(a.displayName || a.username || '').localeCompare(String(b.displayName || b.username || ''))
+        String(a.displayName || a.username || '').localeCompare(
+          String(b.displayName || b.username || '')
+        )
       ),
     [players]
   );
@@ -52,7 +54,9 @@ function HeadToHeadForm({
     } else {
       setPlayer2Query(value);
     }
-    const exact = sortedPlayers.find((p) => getPlayerLabel(p).toLowerCase() === value.trim().toLowerCase());
+    const exact = sortedPlayers.find(
+      (p) => getPlayerLabel(p).toLowerCase() === value.trim().toLowerCase()
+    );
     if (exact) {
       if (which === 'p1') onPlayer1Change(String(exact._id));
       else onPlayer2Change(String(exact._id));

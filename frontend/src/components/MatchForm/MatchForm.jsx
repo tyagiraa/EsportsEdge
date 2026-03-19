@@ -37,9 +37,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
       setGameId(selectedGameId);
       const selectedGame = (games || []).find((g) => String(g._id) === String(selectedGameId));
       setGameQuery(selectedGame?.name || '');
-      setDate(
-        match.date ? toLocalDateTimeInputValue(match.date) : toLocalDateTimeInputValue()
-      );
+      setDate(match.date ? toLocalDateTimeInputValue(match.date) : toLocalDateTimeInputValue());
       setPlayerIds(
         Array.isArray(match.players)
           ? match.players.map((p) => (typeof p === 'object' && p?.toString ? p.toString() : p))
