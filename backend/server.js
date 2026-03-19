@@ -15,8 +15,13 @@ const authRouter = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(express.json());
+
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || 'dev_secret_change_me',
@@ -24,8 +29,8 @@ const sessionOptions = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   },
 };
 

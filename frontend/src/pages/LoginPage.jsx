@@ -22,6 +22,10 @@ function LoginPage() {
       await login({ username: username.trim(), password });
       await refresh();
       const me = await getMe();
+      if (!me || !me.user) {
+        setError('Login did not persist. Please try again.');
+        return;
+      }
       if (me && me.player && me.player._id) {
         navigate(`/players/${me.player._id}`);
       } else {
