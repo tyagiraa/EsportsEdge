@@ -23,9 +23,12 @@ app.use(
     secret: process.env.SESSION_SECRET || 'dev_secret_change_me',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/esportsedge',
-    }),
+    store:
+      process.env.USE_MONGO_SESSION_STORE === 'true'
+        ? MongoStore.create({
+            mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/esportsedge',
+          })
+        : undefined,
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
