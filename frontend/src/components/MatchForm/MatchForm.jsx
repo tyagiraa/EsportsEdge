@@ -1,19 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import './MatchForm.css';
 
 function MatchForm({ match, games, players, onSubmit, onCancel }) {
   const [gameId, setGameId] = useState('');
+  const [gameQuery, setGameQuery] = useState('');
   const [date, setDate] = useState('');
   const [playerIds, setPlayerIds] = useState([]);
   const [winnerId, setWinnerId] = useState('');
   const [score, setScore] = useState('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
+  const sortedGames = useMemo(
+    () => [...(games || [])].sort((a, b) => a.name.localeCompare(b.name)),
+    [games]
+  );
+  const filteredGames = useMemo(() => {
+    if (!gameQuery.trim()) return sortedGames;
+    const query = gameQuery.trim().toLowerCase();
+    return sortedGames.filter((g) => g.name.toLowerCase().includes(query));
+  }, [sortedGames, gameQuery]);
 
   useEffect(() => {
     if (match) {
-      setGameId(match.gameId?.toString?.() ?? match.gameId ?? '');
+      const selectedGameId = match.gameId?.toString?.() ?? match.gameId ?? '';
+      setGameId(selectedGameId);
+      const selectedGame = (games || []).find((g) => String(g._id) === String(selectedGameId));
+      setGameQuery(selectedGame?.name || '');
       setDate(
         match.date
           ? new Date(match.date).toISOString().slice(0, 16)
@@ -28,9 +41,23 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
       setScore(match.score || '');
       setNotes(match.notes || '');
     } else {
+      setGameId('');
+      setGameQuery('');
       setDate(new Date().toISOString().slice(0, 16));
     }
-  }, [match]);
+  }, [match, games]);
+
+  function handleGameQueryChange(value) {
+    setGameQuery(value);
+    const exact = sortedGames.find((g) => g.name.toLowerCase() === value.trim().toLowerCase());
+    if (exact) setGameId(String(exact._id));
+  }
+
+  function handleGameSelectChange(value) {
+    setGameId(value);
+    const selected = sortedGames.find((g) => String(g._id) === String(value));
+    setGameQuery(selected?.name || '');
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -73,17 +100,40 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
     <form className="match-form" onSubmit={handleSubmit}>
       {error && <p className="match-form__error">{error}</p>}
       <div className="match-form__row">
+        <label htmlFor="match-game-search">Find game</label>
+        <input
+          id="match-game-search"
+          type="text"
+          value={gameQuery}
+          onChange={(e) => handleGameQueryChange(e.target.value)}
+          placeholder="Type game name..."
+          list="match-game-options"
+          autoComplete="off"
+        />
+        <datalist id="match-game-options">
+          {sortedGames.map((g) => (
+            <option key={g._id} value={g.name} />
+          ))}
+        </datalist>
+      </div>
+      <div className="match-form__row">
         <label htmlFor="match-game">Game</label>
-        <select id="match-game" value={gameId} onChange={(e) => setGameId(e.target.value)} required>
+        <select
+          id="match-game"
+          value={gameId}
+          onChange={(e) => handleGameSelectChange(e.target.value)}
+          required
+        >
           <option value="">Select game</option>
-          {[...(games || [])]
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((g) => (
-              <option key={g._id} value={g._id}>
-                {g.name}
-              </option>
-            ))}
+          {filteredGames.map((g) => (
+            <option key={g._id} value={g._id}>
+              {g.name}
+            </option>
+          ))}
         </select>
+        <small className="match-form__hint">
+          Type to narrow games, then confirm the game from the dropdown.
+        </small>
       </div>
       <div className="match-form__row">
         <label htmlFor="match-date">Date</label>
