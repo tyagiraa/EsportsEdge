@@ -3,6 +3,75 @@ const { connectToMongo, getDb, closeMongo } = require('../db/mongo');
 const bcrypt = require('bcryptjs');
 
 const DEFAULT_PASSWORD = 'password123';
+const PLAYER_COUNT = 1300;
+const GAME_COUNT = 20;
+const MATCH_COUNT = 1300;
+
+const FIRST_NAMES = [
+  'Alex',
+  'Jordan',
+  'Taylor',
+  'Morgan',
+  'Riley',
+  'Casey',
+  'Avery',
+  'Skyler',
+  'Quinn',
+  'Cameron',
+  'Rowan',
+  'Parker',
+  'Reese',
+  'Logan',
+  'Kai',
+  'Noah',
+  'Liam',
+  'Ethan',
+  'Mason',
+  'Aiden',
+  'Emma',
+  'Olivia',
+  'Ava',
+  'Sophia',
+  'Mia',
+  'Charlotte',
+  'Amelia',
+  'Harper',
+  'Ella',
+  'Nora',
+];
+
+const LAST_NAMES = [
+  'Sharma',
+  'Patel',
+  'Singh',
+  'Kim',
+  'Chen',
+  'Nguyen',
+  'Smith',
+  'Brown',
+  'Garcia',
+  'Martinez',
+  'Wilson',
+  'Anderson',
+  'Thomas',
+  'White',
+  'Harris',
+  'Martin',
+  'Clark',
+  'Lewis',
+  'Walker',
+  'Hall',
+  'Young',
+  'Allen',
+  'King',
+  'Wright',
+  'Scott',
+  'Green',
+  'Baker',
+  'Adams',
+  'Nelson',
+  'Carter',
+];
 
 const GAME_NAMES = [
   'Valorant',
@@ -40,6 +109,14 @@ function randomDateWithinDays(daysAgo) {
   return new Date(past + Math.random() * (now - past));
 }
 
+function createRandomPlayerIdentity(index) {
+  const first = pick(FIRST_NAMES);
+  const last = pick(LAST_NAMES);
+  const displayName = `${first} ${last}`;
+  const username = `${first}.${last}.${index + 1}`.toLowerCase();
+  return { username, displayName };
+}
+
 async function seed() {
   await connectToMongo();
   const db = getDb();
@@ -55,8 +132,9 @@ async function seed() {
 
   const playerIds = [];
   const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);
-  for (let i = 0; i < 100; i++) {
-    const u = `player${i + 1}`;
+  for (let i = 0; i < PLAYER_COUNT; i++) {
+    const identity = createRandomPlayerIdentity(i);
+    const u = identity.username;
     const userResult = await usersCol.insertOne({
       username: u,
       passwordHash,
@@ -65,7 +143,7 @@ async function seed() {
     const userId = userResult.insertedId;
     const doc = {
       username: u,
-      displayName: `Player ${i + 1}`,
+      displayName: identity.displayName,
       email: `${u}@example.com`,
       favoriteGame: pick(GAME_NAMES),
       bio: i % 3 === 0 ? `Bio for ${u}` : null,
@@ -79,7 +157,7 @@ async function seed() {
 
   const gameIds = [];
   const usedNames = new Set();
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < GAME_COUNT; i++) {
     let name = pick(GAME_NAMES);
     while (usedNames.has(name)) name = pick(GAME_NAMES);
     usedNames.add(name);
@@ -95,7 +173,7 @@ async function seed() {
   }
   console.log(`Inserted ${gameIds.length} games.`);
 
-  for (let i = 0; i < 1001; i++) {
+  for (let i = 0; i < MATCH_COUNT; i++) {
     const numPlayers = Math.random() > 0.2 ? 2 : 2 + Math.floor(Math.random() * 2);
     const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
     const players = shuffled.slice(0, numPlayers).map((id) => id);
@@ -111,7 +189,7 @@ async function seed() {
     };
     await matchesCol.insertOne(doc);
   }
-  console.log('Inserted 1001 matches.');
+  console.log(`Inserted ${MATCH_COUNT} matches.`);
 
   await closeMongo();
   console.log('Seed complete.');
