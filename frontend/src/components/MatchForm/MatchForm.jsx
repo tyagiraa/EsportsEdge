@@ -2,6 +2,16 @@ import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import './MatchForm.css';
 
+function toLocalDateTimeInputValue(value) {
+  const d = value ? new Date(value) : new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 function MatchForm({ match, games, players, onSubmit, onCancel }) {
   const [gameId, setGameId] = useState('');
   const [gameQuery, setGameQuery] = useState('');
@@ -28,9 +38,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
       const selectedGame = (games || []).find((g) => String(g._id) === String(selectedGameId));
       setGameQuery(selectedGame?.name || '');
       setDate(
-        match.date
-          ? new Date(match.date).toISOString().slice(0, 16)
-          : new Date().toISOString().slice(0, 16)
+        match.date ? toLocalDateTimeInputValue(match.date) : toLocalDateTimeInputValue()
       );
       setPlayerIds(
         Array.isArray(match.players)
@@ -43,7 +51,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
     } else {
       setGameId('');
       setGameQuery('');
-      setDate(new Date().toISOString().slice(0, 16));
+      setDate(toLocalDateTimeInputValue());
     }
   }, [match, games]);
 
