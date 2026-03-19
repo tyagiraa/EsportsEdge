@@ -12,11 +12,17 @@
 .auth-form__row input {
   width: 100%;
   padding: 0.5rem 0.6rem;
-  border: 1px solid #444;
+  border: 1px solid rgba(51, 65, 85, 0.9);
   border-radius: 4px;
   background: #1a1a1a;
   color: #ddd;
   font: inherit;
+}
+
+.auth-form__row input:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.7);
+  outline-offset: 2px;
+  border-color: rgba(56, 189, 248, 0.6);
 }
 
 .auth-form__actions button {

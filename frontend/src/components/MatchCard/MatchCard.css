@@ -7,6 +7,17 @@
   border-radius: 6px;
   margin-bottom: 0.5rem;
   border: 1px solid rgba(51, 65, 85, 0.9);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.match-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.55);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 
 .match-card__info {
@@ -19,7 +30,7 @@
 }
 
 .match-card__title a {
-  color: #7eb8da;
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -33,7 +44,7 @@
 .match-card__score {
   margin: 0.15rem 0 0 0;
   font-size: 0.875rem;
-  color: #888;
+  color: var(--muted2);
 }
 
 .match-card__btn {

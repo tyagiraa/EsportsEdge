@@ -23,12 +23,20 @@
 .match-form__row textarea {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #333;
+  border: 1px solid rgba(51, 65, 85, 0.9);
   border-radius: 4px;
   background: #1a1a2e;
   color: #ddd;
   font: inherit;
   box-sizing: border-box;
+}
+
+.match-form__row input:focus-visible,
+.match-form__row select:focus-visible,
+.match-form__row textarea:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.7);
+  outline-offset: 2px;
+  border-color: rgba(56, 189, 248, 0.6);
 }
 
 .match-form__row textarea {
