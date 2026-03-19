@@ -4,7 +4,7 @@ module.exports = {
     es2021: true,
   },
   extends: ['eslint:recommended'],
-  ignorePatterns: ['node_modules/'],
+  ignorePatterns: ['node_modules/', 'dist/'],
   parserOptions: {
     ecmaVersion: 2021,
     sourceType: 'script',

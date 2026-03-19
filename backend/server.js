@@ -42,6 +42,15 @@ app.use('/api/players', playersRouter);
 app.use('/api/games', gamesRouter);
 app.use('/api/matches', matchesRouter);
 app.use('/api/stats', statsRouter);
+
+app.get('/api/build-info', (req, res) => {
+  res.json({
+    ok: true,
+    authRoutesMounted: true,
+    feature: 'passport-session',
+  });
+});
+
 const distDir = path.join(__dirname, 'dist');
 if (fs.existsSync(distDir)) {
   app.use(express.static(distDir));
