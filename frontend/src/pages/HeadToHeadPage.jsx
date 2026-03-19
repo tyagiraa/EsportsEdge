@@ -33,8 +33,8 @@ function HeadToHeadPage() {
 
   const p1 = players.find((a) => String(a._id) === String(player1Id));
   const p2 = players.find((a) => String(a._id) === String(player2Id));
-  const p1Name = p1 ? (p1.displayName || p1.username) : 'Player 1';
-  const p2Name = p2 ? (p2.displayName || p2.username) : 'Player 2';
+  const p1Name = p1 ? p1.displayName || p1.username : 'Player 1';
+  const p2Name = p2 ? p2.displayName || p2.username : 'Player 2';
 
   const stats = h2hStats
     ? {
@@ -57,15 +57,18 @@ function HeadToHeadPage() {
             players={players}
             player1Id={player1Id}
             player2Id={player2Id}
-            onPlayer1Change={(v) => { setPlayer1Id(v); setH2hStats(null); }}
-            onPlayer2Change={(v) => { setPlayer2Id(v); setH2hStats(null); }}
+            onPlayer1Change={(v) => {
+              setPlayer1Id(v);
+              setH2hStats(null);
+            }}
+            onPlayer2Change={(v) => {
+              setPlayer2Id(v);
+              setH2hStats(null);
+            }}
             onSubmit={handleSubmit}
           />
           {h2hStats && Object.keys(stats).length > 0 && (
-            <StatsPanel
-              stats={stats}
-              title={`${p1Name} vs ${p2Name}`}
-            />
+            <StatsPanel stats={stats} title={`${p1Name} vs ${p2Name}`} />
           )}
         </>
       )}

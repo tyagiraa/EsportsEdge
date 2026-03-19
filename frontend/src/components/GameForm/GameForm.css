@@ -45,7 +45,7 @@
   font: inherit;
 }
 
-.game-form__actions button[type="submit"] {
+.game-form__actions button[type='submit'] {
   background: #1f3460;
   color: #fff;
 }

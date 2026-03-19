@@ -16,9 +16,7 @@ function MatchCard({ match, gameName, playerNames, winnerName }) {
         {playerNames && playerNames.length > 0 && (
           <p className="match-card__players">Players: {playerNames.join(' vs ')}</p>
         )}
-        {winnerName && (
-          <p className="match-card__winner">Winner: {winnerName}</p>
-        )}
+        {winnerName && <p className="match-card__winner">Winner: {winnerName}</p>}
         {match.score && <p className="match-card__score">{match.score}</p>}
       </div>
       {id && (

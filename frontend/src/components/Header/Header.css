@@ -1,16 +1,18 @@
 .header {
-  padding: 0.75rem 1rem;
-  background: #1a1a2e;
-  color: #eee;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(90deg, #0f172a, #1e293b);
+  color: #f9fafb;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
 .header__title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #eee;
+  font-size: 1.35rem;
+  font-weight: 650;
+  color: #f9fafb;
   text-decoration: none;
+  letter-spacing: 0.02em;
 }
 
 .header__title:hover {
-  color: #fff;
+  color: #e5e7eb;
 }

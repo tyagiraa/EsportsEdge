@@ -20,9 +20,12 @@ router.get('/head-to-head', async (req, res) => {
     }
 
     const db = getDb();
-    const shared = await db.collection('matches').find({
-      players: { $all: [id1, id2] },
-    }).toArray();
+    const shared = await db
+      .collection('matches')
+      .find({
+        players: { $all: [id1, id2] },
+      })
+      .toArray();
 
     let player1Wins = 0;
     let player2Wins = 0;

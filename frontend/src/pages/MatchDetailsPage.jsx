@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getMatch, getGames, getPlayers, updateMatch, deleteMatch } from '../utils/api';
 import MatchForm from '../components/MatchForm/MatchForm';
+import { useAuth } from '../context/AuthContext';
 
 function nameById(arr, id) {
   if (!id || !arr) return '';
   const strId = String(id);
   const item = arr.find((a) => String(a._id) === strId);
-  return item ? (item.displayName || item.username || item.name) : strId;
+  return item ? item.displayName || item.username || item.name : strId;
 }
 
 function MatchDetailsPage() {
@@ -19,6 +20,7 @@ function MatchDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(false);
+  const { auth, loading: authLoading } = useAuth();
 
   useEffect(() => {
     Promise.all([getMatch(id), getGames(), getPlayers()])
@@ -60,26 +62,36 @@ function MatchDetailsPage() {
     <div>
       <h1>Match details</h1>
       {error && <p className="page-error">{error}</p>}
-      <p><strong>{gameName || 'Game'}</strong></p>
+      <p>
+        <strong>{gameName || 'Game'}</strong>
+      </p>
       <p className="muted">Date: {dateStr}</p>
       {playerNames.length > 0 && <p>Players: {playerNames.join(', ')}</p>}
       {winnerName && <p>Winner: {winnerName}</p>}
       {match.score && <p>Score: {match.score}</p>}
       {match.notes && <p>Notes: {match.notes}</p>}
-      <div className="item-actions" style={{ marginBottom: '1rem' }}>
-        <button type="button" onClick={() => setEditing(!editing)}>
-          {editing ? 'Cancel edit' : 'Edit'}
-        </button>
-        <button type="button" onClick={handleDelete}>Delete</button>
-      </div>
-      {editing && (
-        <MatchForm
-          match={match}
-          games={games}
-          players={players}
-          onSubmit={handleUpdate}
-          onCancel={() => setEditing(false)}
-        />
+      {!authLoading && !auth ? (
+        <p className="page-error">Login required to edit or delete this match.</p>
+      ) : (
+        <>
+          <div className="item-actions" style={{ marginBottom: '1rem' }}>
+            <button type="button" onClick={() => setEditing(!editing)}>
+              {editing ? 'Cancel edit' : 'Edit'}
+            </button>
+            <button type="button" onClick={handleDelete}>
+              Delete
+            </button>
+          </div>
+          {editing && (
+            <MatchForm
+              match={match}
+              games={games}
+              players={players}
+              onSubmit={handleUpdate}
+              onCancel={() => setEditing(false)}
+            />
+          )}
+        </>
       )}
     </div>
   );

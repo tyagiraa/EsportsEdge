@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getPlayers, createPlayer, updatePlayer, deletePlayer } from '../utils/api';
 import PlayerCard from '../components/PlayerCard/PlayerCard';
 import PlayerForm from '../components/PlayerForm/PlayerForm';
+import { useAuth } from '../context/AuthContext';
 
 function PlayersPage() {
   const [players, setPlayers] = useState([]);
@@ -9,6 +10,7 @@ function PlayersPage() {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const { auth, loading: authLoading } = useAuth();
 
   async function load() {
     setLoading(true);
@@ -55,27 +57,38 @@ function PlayersPage() {
 
   return (
     <div>
-      <h1>Players</h1>
+      <h1>
+        Players
+        {!loading && players.length > 0 && <span className="page-count"> ({players.length})</span>}
+      </h1>
       {error && <p className="page-error">{error}</p>}
+      {!authLoading && !auth && (
+        <p className="page-error">Login required to create, edit, or delete players.</p>
+      )}
       {loading ? (
         <p>Loading…</p>
       ) : (
         <>
           <p>
-            <button type="button" onClick={() => { setShowForm(true); setEditing(null); }}>
-              Add player
-            </button>
+            {auth && (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForm(true);
+                  setEditing(null);
+                }}
+              >
+                Add player
+              </button>
+            )}
           </p>
-          {showForm && !editing && (
+          {auth && showForm && !editing && (
             <section className="form-section">
               <h2>New player</h2>
-              <PlayerForm
-                onSubmit={handleCreate}
-                onCancel={() => setShowForm(false)}
-              />
+              <PlayerForm onSubmit={handleCreate} onCancel={() => setShowForm(false)} />
             </section>
           )}
-          {editing && (
+          {auth && editing && (
             <section className="form-section">
               <h2>Edit player</h2>
               <PlayerForm
@@ -89,10 +102,16 @@ function PlayersPage() {
             {players.map((p) => (
               <li key={p._id}>
                 <PlayerCard player={p} />
-                <div className="item-actions">
-                  <button type="button" onClick={() => setEditing(p)}>Edit</button>
-                  <button type="button" onClick={() => handleDelete(p._id)}>Delete</button>
-                </div>
+                {auth && (
+                  <div className="item-actions">
+                    <button type="button" onClick={() => setEditing(p)}>
+                      Edit
+                    </button>
+                    <button type="button" onClick={() => handleDelete(p._id)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

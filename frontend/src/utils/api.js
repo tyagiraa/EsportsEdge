@@ -7,6 +7,7 @@ async function request(path, options = {}) {
       'Content-Type': 'application/json',
       ...options.headers,
     },
+    credentials: 'include',
     ...options,
   };
   if (config.body && typeof config.body === 'object' && !(config.body instanceof FormData)) {
@@ -19,7 +20,6 @@ async function request(path, options = {}) {
   return data;
 }
 
-// Players
 export async function getPlayers() {
   return request('/players');
 }
@@ -36,7 +36,6 @@ export async function deletePlayer(id) {
   return request(`/players/${id}`, { method: 'DELETE' });
 }
 
-// Games
 export async function getGames() {
   return request('/games');
 }
@@ -53,11 +52,12 @@ export async function deleteGame(id) {
   return request(`/games/${id}`, { method: 'DELETE' });
 }
 
-// Matches
 export async function getMatches(filters = {}) {
   const params = new URLSearchParams();
   if (filters.gameId) params.set('gameId', filters.gameId);
   if (filters.date) params.set('date', filters.date);
+  if (filters.year) params.set('year', String(filters.year));
+  if (filters.month) params.set('month', String(filters.month));
   const qs = params.toString();
   return request(qs ? `/matches?${qs}` : '/matches');
 }
@@ -74,8 +74,23 @@ export async function deleteMatch(id) {
   return request(`/matches/${id}`, { method: 'DELETE' });
 }
 
-// Stats (computed from matches)
 export async function getHeadToHeadStats(player1Id, player2Id) {
   const params = new URLSearchParams({ player1: player1Id, player2: player2Id });
   return request(`/stats/head-to-head?${params}`);
+}
+
+export async function getMe() {
+  return request('/auth/me');
+}
+
+export async function login(body) {
+  return request('/auth/login', { method: 'POST', body });
+}
+
+export async function register(body) {
+  return request('/auth/register', { method: 'POST', body });
+}
+
+export async function logout() {
+  return request('/auth/logout', { method: 'POST' });
 }

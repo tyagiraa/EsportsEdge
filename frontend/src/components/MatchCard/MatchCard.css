@@ -3,9 +3,10 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 0.75rem 1rem;
-  background: #1a1a2e;
+  background: #020617;
   border-radius: 6px;
   margin-bottom: 0.5rem;
+  border: 1px solid rgba(51, 65, 85, 0.9);
 }
 
 .match-card__info {

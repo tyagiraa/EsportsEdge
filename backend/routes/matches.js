@@ -1,10 +1,11 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { getDb } = require('../db/mongo');
+const requireAuth = require('../middleware/requireAuth');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     const { gameId, date, players, winnerId, score, notes } = req.body;
@@ -31,22 +32,29 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const db = getDb();
-    const { gameId, date } = req.query;
+    const { gameId, date, year, month } = req.query;
     const filter = {};
     if (gameId && ObjectId.isValid(gameId)) {
       filter.gameId = new ObjectId(gameId);
     }
-    if (date && typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    if (year && /^\d{4}$/.test(String(year))) {
+      const y = Number(year);
+      const m = month && Number(month) >= 1 && Number(month) <= 12 ? Number(month) : null;
+      const start = new Date(Date.UTC(y, m ? m - 1 : 0, 1, 0, 0, 0));
+      const end = new Date(start);
+      if (m) {
+        end.setUTCMonth(end.getUTCMonth() + 1);
+      } else {
+        end.setUTCFullYear(end.getUTCFullYear() + 1);
+      }
+      filter.date = { $gte: start, $lt: end };
+    } else if (date && typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
       const dayStart = new Date(date + 'T00:00:00.000Z');
       const dayEnd = new Date(dayStart);
       dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
       filter.date = { $gte: dayStart, $lt: dayEnd };
     }
-    const list = await db
-      .collection('matches')
-      .find(filter)
-      .sort({ date: -1 })
-      .toArray();
+    const list = await db.collection('matches').find(filter).sort({ date: -1 }).toArray();
     res.json(list);
   } catch (err) {
     console.error(err);
@@ -69,7 +77,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     if (!ObjectId.isValid(req.params.id)) {
@@ -77,16 +85,18 @@ router.put('/:id', async (req, res) => {
     }
     const { gameId, date, players, winnerId, score, notes } = req.body;
     const update = {};
-    if (gameId !== undefined) update.gameId = ObjectId.isValid(gameId) ? new ObjectId(gameId) : gameId;
+    if (gameId !== undefined)
+      update.gameId = ObjectId.isValid(gameId) ? new ObjectId(gameId) : gameId;
     if (date !== undefined) update.date = new Date(date);
-    if (players !== undefined) update.players = players.map((p) => (ObjectId.isValid(p) ? new ObjectId(p) : p));
-    if (winnerId !== undefined) update.winnerId = winnerId && ObjectId.isValid(winnerId) ? new ObjectId(winnerId) : winnerId;
+    if (players !== undefined)
+      update.players = players.map((p) => (ObjectId.isValid(p) ? new ObjectId(p) : p));
+    if (winnerId !== undefined)
+      update.winnerId = winnerId && ObjectId.isValid(winnerId) ? new ObjectId(winnerId) : winnerId;
     if (score !== undefined) update.score = score;
     if (notes !== undefined) update.notes = notes;
-    const result = await db.collection('matches').updateOne(
-      { _id: new ObjectId(req.params.id) },
-      { $set: update }
-    );
+    const result = await db
+      .collection('matches')
+      .updateOne({ _id: new ObjectId(req.params.id) }, { $set: update });
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: 'Match not found' });
     }
@@ -98,7 +108,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     if (!ObjectId.isValid(req.params.id)) {

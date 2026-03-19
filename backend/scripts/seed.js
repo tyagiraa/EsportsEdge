@@ -1,15 +1,30 @@
-/**
- * Seed script: populates DB with 100 players, 20 games, 1001 matches.
- * Run: npm run seed (from backend directory).
- */
 require('dotenv').config();
 const { connectToMongo, getDb, closeMongo } = require('../db/mongo');
+const bcrypt = require('bcryptjs');
+
+const DEFAULT_PASSWORD = 'password123';
 
 const GAME_NAMES = [
-  'Valorant', 'League of Legends', 'Counter-Strike 2', 'Dota 2', 'Overwatch 2',
-  'Rocket League', 'FIFA 24', 'Apex Legends', 'Fortnite', 'Street Fighter 6',
-  'Tekken 8', 'Super Smash Bros', 'Hearthstone', 'StarCraft II', 'Rainbow Six Siege',
-  'Call of Duty', 'Minecraft', 'Among Us', 'Fall Guys', 'Brawlhalla',
+  'Valorant',
+  'League of Legends',
+  'Counter-Strike 2',
+  'Dota 2',
+  'Overwatch 2',
+  'Rocket League',
+  'FIFA 24',
+  'Apex Legends',
+  'Fortnite',
+  'Street Fighter 6',
+  'Tekken 8',
+  'Super Smash Bros',
+  'Hearthstone',
+  'StarCraft II',
+  'Rainbow Six Siege',
+  'Call of Duty',
+  'Minecraft',
+  'Among Us',
+  'Fall Guys',
+  'Brawlhalla',
 ];
 const GENRES = ['FPS', 'MOBA', 'Battle Royale', 'Fighting', 'Sports', 'Strategy', 'Card'];
 const PLATFORMS = ['PC', 'PlayStation', 'Xbox', 'Cross-platform'];
@@ -29,22 +44,32 @@ async function seed() {
   await connectToMongo();
   const db = getDb();
   const playersCol = db.collection('players');
+  const usersCol = db.collection('users');
   const gamesCol = db.collection('games');
   const matchesCol = db.collection('matches');
 
   await playersCol.deleteMany({});
+  await usersCol.deleteMany({});
   await gamesCol.deleteMany({});
   await matchesCol.deleteMany({});
 
   const playerIds = [];
+  const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);
   for (let i = 0; i < 100; i++) {
     const u = `player${i + 1}`;
+    const userResult = await usersCol.insertOne({
+      username: u,
+      passwordHash,
+      createdAt: new Date(),
+    });
+    const userId = userResult.insertedId;
     const doc = {
       username: u,
       displayName: `Player ${i + 1}`,
       email: `${u}@example.com`,
       favoriteGame: pick(GAME_NAMES),
       bio: i % 3 === 0 ? `Bio for ${u}` : null,
+      userId,
       createdAt: new Date(),
     };
     const result = await playersCol.insertOne(doc);

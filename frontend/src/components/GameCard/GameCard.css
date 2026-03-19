@@ -1,13 +1,23 @@
 .game-card {
   padding: 0.75rem 1rem;
-  background: #1a1a2e;
+  background: #020617;
   border-radius: 6px;
   margin-bottom: 0.5rem;
+  border: 1px solid rgba(51, 65, 85, 0.9);
 }
 
 .game-card__name {
   margin: 0 0 0.25rem 0;
   font-size: 1rem;
+}
+
+.game-card__name a {
+  color: #e5e7eb;
+  text-decoration: none;
+}
+
+.game-card__name a:hover {
+  color: #38bdf8;
 }
 
 .game-card__meta {

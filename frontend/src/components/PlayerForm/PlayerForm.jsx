@@ -80,12 +80,7 @@ function PlayerForm({ player, onSubmit, onCancel }) {
       </div>
       <div className="player-form__row">
         <label htmlFor="player-bio">Bio</label>
-        <textarea
-          id="player-bio"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          rows={3}
-        />
+        <textarea id="player-bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={3} />
       </div>
       <div className="player-form__actions">
         <button type="submit">{player ? 'Save' : 'Create'}</button>

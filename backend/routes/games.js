@@ -1,10 +1,11 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { getDb } = require('../db/mongo');
+const requireAuth = require('../middleware/requireAuth');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     const { name, genre, platform, developer } = req.body;
@@ -30,11 +31,14 @@ router.get('/', async (req, res) => {
   try {
     const db = getDb();
     const list = await db.collection('games').find({}).toArray();
-    const counts = await db.collection('matches').aggregate([
-      { $group: { _id: '$gameId', count: { $sum: 1 } } },
-    ]).toArray();
+    const counts = await db
+      .collection('matches')
+      .aggregate([{ $group: { _id: '$gameId', count: { $sum: 1 } } }])
+      .toArray();
     const countMap = {};
-    counts.forEach((c) => { countMap[c._id.toString()] = c.count; });
+    counts.forEach((c) => {
+      countMap[c._id.toString()] = c.count;
+    });
     list.forEach((g) => {
       g.matchCount = countMap[g._id.toString()] ?? 0;
     });
@@ -62,7 +66,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     if (!ObjectId.isValid(req.params.id)) {
@@ -74,10 +78,9 @@ router.put('/:id', async (req, res) => {
     if (genre !== undefined) update.genre = genre;
     if (platform !== undefined) update.platform = platform;
     if (developer !== undefined) update.developer = developer;
-    const result = await db.collection('games').updateOne(
-      { _id: new ObjectId(req.params.id) },
-      { $set: update }
-    );
+    const result = await db
+      .collection('games')
+      .updateOne({ _id: new ObjectId(req.params.id) }, { $set: update });
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: 'Game not found' });
     }
@@ -89,14 +92,18 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     if (!ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ error: 'Invalid game id' });
     }
-    const result = await db.collection('games').deleteOne({ _id: new ObjectId(req.params.id) });
+    const gameId = new ObjectId(req.params.id);
+    const result = await db.collection('games').deleteOne({ _id: gameId });
     if (result.deletedCount === 0) return res.status(404).json({ error: 'Game not found' });
+
+    await db.collection('matches').deleteMany({ gameId });
+
     res.status(204).send();
   } catch (err) {
     console.error(err);

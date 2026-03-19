@@ -1,14 +1,30 @@
-main {
-  padding: 1rem;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
   background: #1a1a1a;
   color: #ddd;
+}
+
+main {
+  padding: 1.5rem 1rem 2rem;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 1rem 0 0.75rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.page-count {
+  font-size: 0.95rem;
+  color: #888;
+  margin-left: 0.35rem;
 }
 
 .page-error {
@@ -51,7 +67,7 @@ body {
 .card-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0.5rem 0 0;
 }
 
 .card-list > li {
@@ -68,8 +84,8 @@ body {
 .item-actions button {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
-  background: #333;
-  color: #aaa;
+  background: #233554;
+  color: #e2e8f0;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -96,7 +112,8 @@ body {
 }
 
 .matches-filters select,
-.matches-filters input[type="date"] {
+.matches-filters input[type='date'],
+.matches-filters input[type='number'] {
   padding: 0.4rem 0.5rem;
   border: 1px solid #444;
   border-radius: 4px;

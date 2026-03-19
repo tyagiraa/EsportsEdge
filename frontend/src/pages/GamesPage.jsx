@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getGames, createGame, updateGame, deleteGame } from '../utils/api';
 import GameCard from '../components/GameCard/GameCard';
 import GameForm from '../components/GameForm/GameForm';
+import { useAuth } from '../context/AuthContext';
 
 function GamesPage() {
   const [games, setGames] = useState([]);
@@ -9,13 +10,15 @@ function GamesPage() {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const { auth, loading: authLoading } = useAuth();
 
   async function load() {
     setLoading(true);
     setError('');
     try {
       const data = await getGames();
-      setGames(data);
+      const sorted = [...data].sort((a, b) => a.name.localeCompare(b.name));
+      setGames(sorted);
     } catch (err) {
       setError(err.message || 'Failed to load games');
     } finally {
@@ -55,44 +58,57 @@ function GamesPage() {
 
   return (
     <div>
-      <h1>Games</h1>
+      <h1>
+        Games
+        {!loading && games.length > 0 && <span className="page-count"> ({games.length})</span>}
+      </h1>
       {error && <p className="page-error">{error}</p>}
       {loading ? (
         <p>Loading…</p>
       ) : (
         <>
+          {!authLoading && !auth && (
+            <p className="page-error">Login required to create, edit, or delete games.</p>
+          )}
           <p>
-            <button type="button" onClick={() => { setShowForm(true); setEditing(null); }}>
-              Add game
-            </button>
+            {auth && (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForm(true);
+                  setEditing(null);
+                }}
+              >
+                Add game
+              </button>
+            )}
           </p>
-          {showForm && !editing && (
+          {auth && showForm && !editing && (
             <section className="form-section">
               <h2>New game</h2>
-              <GameForm
-                onSubmit={handleCreate}
-                onCancel={() => setShowForm(false)}
-              />
+              <GameForm onSubmit={handleCreate} onCancel={() => setShowForm(false)} />
             </section>
           )}
-          {editing && (
+          {auth && editing && (
             <section className="form-section">
               <h2>Edit game</h2>
-              <GameForm
-                game={editing}
-                onSubmit={handleUpdate}
-                onCancel={() => setEditing(null)}
-              />
+              <GameForm game={editing} onSubmit={handleUpdate} onCancel={() => setEditing(null)} />
             </section>
           )}
           <ul className="card-list">
             {games.map((g) => (
               <li key={g._id}>
                 <GameCard game={g} />
-                <div className="item-actions">
-                  <button type="button" onClick={() => setEditing(g)}>Edit</button>
-                  <button type="button" onClick={() => handleDelete(g._id)}>Delete</button>
-                </div>
+                {auth && (
+                  <div className="item-actions">
+                    <button type="button" onClick={() => setEditing(g)}>
+                      Edit
+                    </button>
+                    <button type="button" onClick={() => handleDelete(g._id)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

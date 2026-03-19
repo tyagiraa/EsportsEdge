@@ -1,8 +1,9 @@
 .stats-panel {
   padding: 1rem;
-  background: #1a1a2e;
+  background: #020617;
   border-radius: 6px;
   margin-bottom: 1rem;
+  border: 1px solid rgba(51, 65, 85, 0.9);
 }
 
 .stats-panel__title {

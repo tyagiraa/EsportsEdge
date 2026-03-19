@@ -50,7 +50,7 @@
   font: inherit;
 }
 
-.player-form__actions button[type="submit"] {
+.player-form__actions button[type='submit'] {
   background: #1f3460;
   color: #fff;
 }

@@ -2,9 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './HeadToHeadForm.css';
 
-function HeadToHeadForm({ players, player1Id, player2Id, onPlayer1Change, onPlayer2Change, onSubmit }) {
+function HeadToHeadForm({
+  players,
+  player1Id,
+  player2Id,
+  onPlayer1Change,
+  onPlayer2Change,
+  onSubmit,
+}) {
   return (
-    <form className="head-to-head-form" onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+    <form
+      className="head-to-head-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+    >
       <div className="head-to-head-form__row">
         <label htmlFor="h2h-player1">Player 1</label>
         <select

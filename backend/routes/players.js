@@ -1,10 +1,11 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { getDb } = require('../db/mongo');
+const requireAuth = require('../middleware/requireAuth');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     const { username, displayName, email, favoriteGame, bio } = req.body;
@@ -64,7 +65,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     if (!ObjectId.isValid(req.params.id)) {
@@ -77,10 +78,9 @@ router.put('/:id', async (req, res) => {
     if (email !== undefined) update.email = email;
     if (favoriteGame !== undefined) update.favoriteGame = favoriteGame;
     if (bio !== undefined) update.bio = bio;
-    const result = await db.collection('players').updateOne(
-      { _id: new ObjectId(req.params.id) },
-      { $set: update }
-    );
+    const result = await db
+      .collection('players')
+      .updateOne({ _id: new ObjectId(req.params.id) }, { $set: update });
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: 'Player not found' });
     }
@@ -92,7 +92,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const db = getDb();
     if (!ObjectId.isValid(req.params.id)) {

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getPlayer, updatePlayer, deletePlayer } from '../utils/api';
 import PlayerForm from '../components/PlayerForm/PlayerForm';
 import StatsPanel from '../components/StatsPanel/StatsPanel';
+import { useAuth } from '../context/AuthContext';
 
 function PlayerProfilePage() {
   const { id } = useParams();
@@ -11,6 +12,7 @@ function PlayerProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(false);
+  const { auth, loading: authLoading } = useAuth();
 
   useEffect(() => {
     getPlayer(id)
@@ -42,8 +44,8 @@ function PlayerProfilePage() {
   const s = player.stats || {};
   const stats = {
     'Total matches': s.totalMatches ?? 0,
-    'Wins': s.wins ?? 0,
-    'Losses': s.losses ?? 0,
+    Wins: s.wins ?? 0,
+    Losses: s.losses ?? 0,
     'Win rate': `${s.winRate ?? 0}%`,
   };
 
@@ -55,18 +57,26 @@ function PlayerProfilePage() {
       {player.bio && <p>{player.bio}</p>}
       {player.favoriteGame && <p>Favorite game: {player.favoriteGame}</p>}
       <StatsPanel stats={stats} title="Stats" />
-      <div className="item-actions" style={{ marginBottom: '1rem' }}>
-        <button type="button" onClick={() => setEditing(!editing)}>
-          {editing ? 'Cancel edit' : 'Edit'}
-        </button>
-        <button type="button" onClick={handleDelete}>Delete</button>
-      </div>
-      {editing && (
-        <PlayerForm
-          player={player}
-          onSubmit={handleUpdate}
-          onCancel={() => setEditing(false)}
-        />
+      {!authLoading && !auth ? (
+        <p className="page-error">Login required to edit or delete this player.</p>
+      ) : (
+        <>
+          <div className="item-actions" style={{ marginBottom: '1rem' }}>
+            <button type="button" onClick={() => setEditing(!editing)}>
+              {editing ? 'Cancel edit' : 'Edit'}
+            </button>
+            <button type="button" onClick={handleDelete}>
+              Delete
+            </button>
+          </div>
+          {editing && (
+            <PlayerForm
+              player={player}
+              onSubmit={handleUpdate}
+              onCancel={() => setEditing(false)}
+            />
+          )}
+        </>
       )}
     </div>
   );

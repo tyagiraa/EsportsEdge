@@ -3,22 +3,45 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { connectToMongo } = require('./db/mongo');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const passport = require('passport');
+require('./auth/passport');
 const playersRouter = require('./routes/players');
 const gamesRouter = require('./routes/games');
 const matchesRouter = require('./routes/matches');
 const statsRouter = require('./routes/stats');
+const authRouter = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'dev_secret_change_me',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/esportsedge',
+    }),
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/api/auth', authRouter);
 app.use('/api/players', playersRouter);
 app.use('/api/games', gamesRouter);
 app.use('/api/matches', matchesRouter);
 app.use('/api/stats', statsRouter);
-
-// Serve the production React build from `backend/dist`.
-// This makes client-side routes (React Router) work under the same domain as the API.
 const distDir = path.join(__dirname, 'dist');
 if (fs.existsSync(distDir)) {
   app.use(express.static(distDir));

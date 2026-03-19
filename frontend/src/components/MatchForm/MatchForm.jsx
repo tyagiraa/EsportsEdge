@@ -36,7 +36,12 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
     e.preventDefault();
     setError('');
     const selectedPlayers = playerIds.filter(Boolean);
-    if (!gameId.trim() || !date.trim() || !Array.isArray(playerIds) || selectedPlayers.length === 0) {
+    if (
+      !gameId.trim() ||
+      !date.trim() ||
+      !Array.isArray(playerIds) ||
+      selectedPlayers.length === 0
+    ) {
       setError('Game, date, and at least one player are required.');
       return;
     }
@@ -69,18 +74,15 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
       {error && <p className="match-form__error">{error}</p>}
       <div className="match-form__row">
         <label htmlFor="match-game">Game</label>
-        <select
-          id="match-game"
-          value={gameId}
-          onChange={(e) => setGameId(e.target.value)}
-          required
-        >
+        <select id="match-game" value={gameId} onChange={(e) => setGameId(e.target.value)} required>
           <option value="">Select game</option>
-          {(games || []).map((g) => (
-            <option key={g._id} value={g._id}>
-              {g.name}
-            </option>
-          ))}
+          {[...(games || [])]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((g) => (
+              <option key={g._id} value={g._id}>
+                {g.name}
+              </option>
+            ))}
         </select>
       </div>
       <div className="match-form__row">
@@ -97,11 +99,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
         <label>Players</label>
         {(playerIds || []).map((pid, index) => (
           <div key={index} className="match-form__player-row">
-            <select
-              value={pid}
-              onChange={(e) => setPlayerAt(index, e.target.value)}
-              required
-            >
+            <select value={pid} onChange={(e) => setPlayerAt(index, e.target.value)} required>
               <option value="">Select player</option>
               {(players || []).map((p) => (
                 <option key={p._id} value={p._id}>
@@ -120,11 +118,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
       </div>
       <div className="match-form__row">
         <label htmlFor="match-winner">Winner (optional)</label>
-        <select
-          id="match-winner"
-          value={winnerId}
-          onChange={(e) => setWinnerId(e.target.value)}
-        >
+        <select id="match-winner" value={winnerId} onChange={(e) => setWinnerId(e.target.value)}>
           <option value="">—</option>
           {(players || []).map((p) => (
             <option key={p._id} value={p._id}>

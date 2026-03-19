@@ -76,7 +76,7 @@
   font: inherit;
 }
 
-.match-form__actions button[type="submit"] {
+.match-form__actions button[type='submit'] {
   background: #1f3460;
   color: #fff;
 }
