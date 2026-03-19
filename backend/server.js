@@ -18,24 +18,24 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'dev_secret_change_me',
-    resave: false,
-    saveUninitialized: true,
-    store:
-      process.env.USE_MONGO_SESSION_STORE === 'true'
-        ? MongoStore.create({
-            mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/esportsedge',
-          })
-        : undefined,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    },
-  })
-);
+const sessionOptions = {
+  secret: process.env.SESSION_SECRET || 'dev_secret_change_me',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  },
+};
+
+if (process.env.USE_MONGO_SESSION_STORE === 'true') {
+  sessionOptions.store = MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/esportsedge',
+  });
+}
+
+app.use(session(sessionOptions));
 
 app.use(passport.initialize());
 app.use(passport.session());
