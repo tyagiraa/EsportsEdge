@@ -146,6 +146,14 @@ For development with auto-reload, run the backend with `npm start` in `backend` 
 
 ## Use of Generative AI
 
+This project used ChatGPT (OpenAI) as a support tool during development.
+
+- Assisted with frontend UI/layout and CSS styling improvements in React pages.
+- Assisted with client-side JavaScript/React logic (form handling, state updates, and API integration).
+- Helped troubleshoot login/authentication issues on the deployed Render application.
+- Supported debugging of backend/API and environment configuration issues.
+
+All suggestions were reviewed, adapted, and validated by the team before inclusion.
 
 ## License
 
