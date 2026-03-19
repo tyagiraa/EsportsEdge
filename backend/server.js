@@ -54,6 +54,16 @@ app.get('/api/build-info', (req, res) => {
   });
 });
 
+app.get('/api/session-test', (req, res) => {
+  req.session.touch();
+  req.session.testValue = String(Date.now());
+  return res.json({
+    ok: true,
+    sessionID: req.sessionID,
+    testValue: req.session.testValue,
+  });
+});
+
 const distDir = path.join(__dirname, 'dist');
 if (fs.existsSync(distDir)) {
   app.use(express.static(distDir));
