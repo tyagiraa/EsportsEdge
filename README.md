@@ -34,23 +34,23 @@ EsportsEdge lets users manage game titles, create and manage player profiles, lo
 
 | Home | Players Directory |
 |------|-------------------|
-| ![Home](public/assets/Screenshot_Home.png) | ![Players Directory](public/assets/Screenshot_Players.png) |
+| ![Home](public/assets/Screenshot_Home.png) | ![Players Directory](public/assets/Screenshot_Players_directory.png) |
 
-| Player Profile | Add / Edit Player |
+| Player Profile | Edit Player |
 |----------------|-------------------|
-| ![Player Profile](public/assets/Screenshot_Player_Profile.png) | ![Add or Edit Player](public/assets/Screenshot_Player_Form.png) |
+| ![Player Profile](public/assets/Screenshot_Player_profile.png) | ![Edit Player](public/assets/Screenshot_Edit_player.png) |
 
-| Games | Add / Edit Game |
+| Games | Add Game |
 |-------|-----------------|
-| ![Games](public/assets/Screenshot_Games.png) | ![Add or Edit Game](public/assets/Screenshot_Game_Form.png) |
+| ![Games](public/assets/Screenshot_Games.png) | ![Add Game](public/assets/Screenshot_Add_Game.png) |
 
-| Matches (filters) | Add / Edit Match |
+| Matches | Add Match |
 |-------------------|------------------|
-| ![Matches with filters](public/assets/Screenshot_Matches.png) | ![Add or Edit Match](public/assets/Screenshot_Match_Form.png) |
+| ![Matches with filters](public/assets/Screenshot_Matches.png) | ![Add Match](public/assets/Screenshot_Add_Match.png) |
 
 | Match Details | Head-to-Head |
 |---------------|---------------|
-| ![Match Details](public/assets/Screenshot_Match_Details.png) | ![Head-to-Head](public/assets/Screenshot_Head_To_Head.png) |
+| ![Match Details](public/assets/Screenshot_Match_Details.png) | ![Head-to-Head](public/assets/Screenshot_Head_To_head.png) |
 
 | Login | Register |
 |-------|----------|
