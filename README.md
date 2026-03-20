@@ -50,7 +50,7 @@ EsportsEdge lets users manage game titles, create and manage player profiles, lo
 
 | Match Details | Head-to-Head |
 |---------------|---------------|
-| ![Match Details](public/assets/Screenshot_Match_Details.png) | ![Head-to-Head](public/assets/Screenshot_Head_To_head.png) |
+| ![Match Details](public/assets/Screenshot_Match_Details.png) | ![Head-to-Head](public/assets/Screenshot_Head_to_head.png) |
 
 | Login | Register |
 |-------|----------|
