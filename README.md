@@ -15,7 +15,7 @@ Raagini Tyagi, Rahul Nayak
 
 **Design Document:** [EsportsEdge – Design Document](./EsportsEdge_Design_Document.pdf)
 
-**Project Presentation:** [EsportsEdge – Google Slides]()
+**Project Presentation:** [EsportsEdge – Google Slides](https://docs.google.com/presentation/d/1VTX0NTaepyff9dIEoEeH7ectbK16S4OYdUXZLMie_EI/edit?usp=sharing)
 
 
 
