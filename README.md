@@ -13,7 +13,7 @@ Raagini Tyagi, Rahul Nayak
 
 **Demo Video:** [EsportsEdge – Project Demonstration Video]()
 
-**Design Document:** [EsportsEdge – Design Document]()
+**Design Document:** [EsportsEdge – Design Document](./EsportsEdge_Design_Document.pdf)
 
 **Project Presentation:** [EsportsEdge – Google Slides]()
 
