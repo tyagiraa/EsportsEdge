@@ -30,9 +30,31 @@ EsportsEdge lets users manage game titles, create and manage player profiles, lo
 - **Matches**: Create, read, update, delete matches. Filter by game title or date. Link matches to a game and multiple players, optional winner and score.
 - **Head-to-head**: Select two players and see total shared matches and wins for each player.
 
-## Screenshot
+## Screenshots
 
-![EsportsEdge screenshot]()
+| Home | Players Directory |
+|------|-------------------|
+| ![Home](public/assets/Screenshot_Home.png) | ![Players Directory](public/assets/Screenshot_Players.png) |
+
+| Player Profile | Add / Edit Player |
+|----------------|-------------------|
+| ![Player Profile](public/assets/Screenshot_Player_Profile.png) | ![Add or Edit Player](public/assets/Screenshot_Player_Form.png) |
+
+| Games | Add / Edit Game |
+|-------|-----------------|
+| ![Games](public/assets/Screenshot_Games.png) | ![Add or Edit Game](public/assets/Screenshot_Game_Form.png) |
+
+| Matches (filters) | Add / Edit Match |
+|-------------------|------------------|
+| ![Matches with filters](public/assets/Screenshot_Matches.png) | ![Add or Edit Match](public/assets/Screenshot_Match_Form.png) |
+
+| Match Details | Head-to-Head |
+|---------------|---------------|
+| ![Match Details](public/assets/Screenshot_Match_Details.png) | ![Head-to-Head](public/assets/Screenshot_Head_To_Head.png) |
+
+| Login | Register |
+|-------|----------|
+| ![Login](public/assets/Screenshot_Login.png) | ![Register](public/assets/Screenshot_Register.png) |
 
 ## Technology Stack
 
