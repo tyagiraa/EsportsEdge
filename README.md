@@ -9,7 +9,7 @@ Raagini Tyagi, Rahul Nayak
 **Instructor:** John Guerra  
 **Course Website:** [Web Development (Spring 2026)](https://johnguerra.co/classes/webDevelopment_online_spring_2026/)
 
-**Live Demo Website:** [EsportsEdge – Live Deployment]()
+**Live Demo Website:** [EsportsEdge – Live Deployment](https://esportsedge-uhom.onrender.com/)
 
 **Demo Video:** [EsportsEdge – Project Demonstration Video]()
 
