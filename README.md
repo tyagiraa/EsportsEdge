@@ -34,7 +34,7 @@ EsportsEdge lets users manage game titles, create and manage player profiles, lo
 
 | Home | Players Directory |
 |------|-------------------|
-| ![Home](public/assets/Screenshot_Home.png) | ![Players Directory](public/assets/Screenshot_Players.png) |
+| ![Home](public/assets/Screenshot Home.png) | ![Players Directory](public/assets/Screenshot_Players.png) |
 
 | Player Profile | Add / Edit Player |
 |----------------|-------------------|
