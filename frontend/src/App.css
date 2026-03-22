@@ -95,6 +95,8 @@ a:hover {
   font-size: 0.95rem;
 }
 
+/* Home.jsx uses className="home", but .home rules are in App.css; could have separated out into Home.css and imported from Home.jsx. */
+
 .home ul {
   list-style: none;
   padding: 0;
@@ -167,6 +169,8 @@ a:hover {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
+
+/* MatchesPage.jsx uses className=".matches-filter", but .matches-filters rules are in App.css; could have separated out into MatchesPage.css and imported from MatchesPage.jsx. */
 
 .matches-filters {
   display: flex;
