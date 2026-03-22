@@ -102,6 +102,7 @@ function PlayersPage() {
             {players.map((p) => (
               <li key={p._id}>
                 <PlayerCard player={p} />
+                <!-- any logged in player is able to edit or delete any other player profiles, the auth should also check if the user is the owner of the profile -->
                 {auth && (
                   <div className="item-actions">
                     <button type="button" onClick={() => setEditing(p)}>
