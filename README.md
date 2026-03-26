@@ -1,5 +1,11 @@
 # EsportsEdge
 
+## Comments
+
+> Great project! It looks like a polished, mature platform. The code for the backend is neat and organized, and having a seeding script is very helpful. The only change I would recommend for the frontend is to use custom hooks which abstract away the business logic from components and pages that render data to keep code organized, maintainable and readable. And the background for the homepage uses a tiled texture which would look better if the gradient spanned the entire viewport height
+
+---
+
 A match tracking and statistics platform for casual and competitive esports players.
 
 **Authors:**
