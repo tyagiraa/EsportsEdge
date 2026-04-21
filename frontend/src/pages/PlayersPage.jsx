@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { getPlayers, createPlayer, updatePlayer, deletePlayer } from '../utils/api';
 import PlayerCard from '../components/PlayerCard/PlayerCard';
 import PlayerForm from '../components/PlayerForm/PlayerForm';
@@ -10,6 +10,7 @@ function PlayersPage() {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [search, setSearch] = useState('');
   const { auth, loading: authLoading } = useAuth();
 
   async function load() {
@@ -17,7 +18,10 @@ function PlayersPage() {
     setError('');
     try {
       const data = await getPlayers();
-      setPlayers(data);
+      const sorted = [...data].sort((a, b) =>
+        (a.displayName || a.username || '').localeCompare(b.displayName || b.username || '')
+      );
+      setPlayers(sorted);
     } catch (err) {
       setError(err.message || 'Failed to load players');
     } finally {
@@ -28,6 +32,20 @@ function PlayersPage() {
   useEffect(() => {
     load();
   }, []);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return players;
+    return players.filter(
+      (p) =>
+        (p.displayName || '').toLowerCase().includes(q) ||
+        (p.username || '').toLowerCase().includes(q)
+    );
+  }, [players, search]);
+
+  function canEdit(p) {
+    return auth && String(auth.player?._id) === String(p._id);
+  }
 
   function handleCreate(values) {
     createPlayer(values)
@@ -49,7 +67,7 @@ function PlayersPage() {
   }
 
   function handleDelete(id) {
-    if (!window.confirm('Delete this player?')) return;
+    if (!window.confirm('Delete this player? This cannot be undone.')) return;
     deletePlayer(id)
       .then(() => load())
       .catch((err) => setError(err.message));
@@ -59,17 +77,29 @@ function PlayersPage() {
     <div>
       <h1>
         Players
-        {!loading && players.length > 0 && <span className="page-count"> ({players.length})</span>}
+        {!loading && (
+          <span className="page-count">
+            {search ? `${filtered.length} / ${players.length}` : players.length}
+          </span>
+        )}
       </h1>
       {error && <p className="page-error">{error}</p>}
       {!authLoading && !auth && (
-        <p className="page-error">Login required to create, edit, or delete players.</p>
+        <p className="page-error">Login required to create or edit players.</p>
       )}
       {loading ? (
         <p>Loading…</p>
       ) : (
         <>
-          <p>
+          <div className="list-controls">
+            <input
+              type="search"
+              className="search-input"
+              placeholder="Search players by name or username…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search players"
+            />
             {auth && (
               <button
                 type="button"
@@ -81,7 +111,8 @@ function PlayersPage() {
                 Add player
               </button>
             )}
-          </p>
+          </div>
+
           {auth && showForm && !editing && (
             <section className="form-section">
               <h2>New player</h2>
@@ -98,16 +129,25 @@ function PlayersPage() {
               />
             </section>
           )}
+
+          {filtered.length === 0 && search && (
+            <p className="muted">No players match &ldquo;{search}&rdquo;.</p>
+          )}
+
           <ul className="card-list">
-            {players.map((p) => (
+            {filtered.map((p) => (
               <li key={p._id}>
                 <PlayerCard player={p} />
-                {auth && (
+                {canEdit(p) && (
                   <div className="item-actions">
                     <button type="button" onClick={() => setEditing(p)}>
                       Edit
                     </button>
-                    <button type="button" onClick={() => handleDelete(p._id)}>
+                    <button
+                      type="button"
+                      className="btn-danger"
+                      onClick={() => handleDelete(p._id)}
+                    >
                       Delete
                     </button>
                   </div>
