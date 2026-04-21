@@ -21,6 +21,10 @@ function PlayerProfilePage() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  function canEdit() {
+    return auth && String(auth.player?._id) === String(id);
+  }
+
   function handleUpdate(values) {
     updatePlayer(id, values)
       .then((updated) => {
@@ -31,7 +35,7 @@ function PlayerProfilePage() {
   }
 
   function handleDelete() {
-    if (!window.confirm('Delete this player?')) return;
+    if (!window.confirm('Delete this player profile? This cannot be undone.')) return;
     deletePlayer(id)
       .then(() => navigate('/players'))
       .catch((err) => setError(err.message));
@@ -57,16 +61,15 @@ function PlayerProfilePage() {
       {player.bio && <p>{player.bio}</p>}
       {player.favoriteGame && <p>Favorite game: {player.favoriteGame}</p>}
       <StatsPanel stats={stats} title="Stats" />
-      {!authLoading && !auth ? (
-        <p className="page-error">Login required to edit or delete this player.</p>
-      ) : (
+
+      {!authLoading && canEdit() && (
         <>
           <div className="item-actions" style={{ marginBottom: '1rem' }}>
             <button type="button" onClick={() => setEditing(!editing)}>
-              {editing ? 'Cancel edit' : 'Edit'}
+              {editing ? 'Cancel' : 'Edit profile'}
             </button>
-            <button type="button" onClick={handleDelete}>
-              Delete
+            <button type="button" className="btn-danger" onClick={handleDelete}>
+              Delete profile
             </button>
           </div>
           {editing && (
