@@ -12,7 +12,7 @@ function toLocalDateTimeInputValue(value) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
-function MatchForm({ match, games, players, onSubmit, onCancel }) {
+function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel }) {
   const [gameId, setGameId] = useState('');
   const [gameQuery, setGameQuery] = useState('');
   const [date, setDate] = useState('');
@@ -21,10 +21,12 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
   const [score, setScore] = useState('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
+
   const sortedGames = useMemo(
     () => [...(games || [])].sort((a, b) => a.name.localeCompare(b.name)),
     [games]
   );
+
   const filteredGames = useMemo(() => {
     if (!gameQuery.trim()) return sortedGames;
     const query = gameQuery.trim().toLowerCase();
@@ -50,8 +52,24 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
       setGameId('');
       setGameQuery('');
       setDate(toLocalDateTimeInputValue());
+      setScore('');
+      setNotes('');
+      setWinnerId('');
+      if (currentPlayerId) {
+        setPlayerIds([String(currentPlayerId)]);
+      } else {
+        setPlayerIds([]);
+      }
     }
-  }, [match, games]);
+  }, [match, games, currentPlayerId]);
+
+  const matchPlayers = useMemo(
+    () =>
+      (players || []).filter((p) =>
+        playerIds.filter(Boolean).map(String).includes(String(p._id))
+      ),
+    [players, playerIds]
+  );
 
   function handleGameQueryChange(value) {
     setGameQuery(value);
@@ -69,12 +87,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
     e.preventDefault();
     setError('');
     const selectedPlayers = playerIds.filter(Boolean);
-    if (
-      !gameId.trim() ||
-      !date.trim() ||
-      !Array.isArray(playerIds) ||
-      selectedPlayers.length === 0
-    ) {
+    if (!gameId.trim() || !date.trim() || !Array.isArray(playerIds) || selectedPlayers.length === 0) {
       setError('Game, date, and at least one player are required.');
       return;
     }
@@ -89,22 +102,34 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
   }
 
   function addPlayer() {
-    setPlayerIds([...playerIds, players?.[0]?._id ?? '']);
+    const firstUnusedPlayer = (players || []).find(
+      (p) => !playerIds.map(String).includes(String(p._id))
+    );
+    setPlayerIds([...playerIds, firstUnusedPlayer?._id ?? players?.[0]?._id ?? '']);
   }
 
   function removePlayer(index) {
+    const removedId = playerIds[index];
     setPlayerIds(playerIds.filter((_, i) => i !== index));
+    if (String(winnerId) === String(removedId)) {
+      setWinnerId('');
+    }
   }
 
   function setPlayerAt(index, id) {
     const next = [...playerIds];
+    const oldId = next[index];
     next[index] = id;
     setPlayerIds(next);
+    if (String(winnerId) === String(oldId)) {
+      setWinnerId('');
+    }
   }
 
   return (
     <form className="match-form" onSubmit={handleSubmit}>
       {error && <p className="match-form__error">{error}</p>}
+
       <div className="match-form__row">
         <label htmlFor="match-game-search">Find game</label>
         <input
@@ -112,7 +137,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
           type="text"
           value={gameQuery}
           onChange={(e) => handleGameQueryChange(e.target.value)}
-          placeholder="Type game name..."
+          placeholder="Type game name…"
           list="match-game-options"
           autoComplete="off"
         />
@@ -122,6 +147,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
           ))}
         </datalist>
       </div>
+
       <div className="match-form__row">
         <label htmlFor="match-game">Game</label>
         <select
@@ -138,11 +164,12 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
           ))}
         </select>
         <small className="match-form__hint">
-          Type to narrow games, then confirm the game from the dropdown.
+          Type above to narrow the list, then confirm from the dropdown.
         </small>
       </div>
+
       <div className="match-form__row">
-        <label htmlFor="match-date">Date</label>
+        <label htmlFor="match-date">Date &amp; time</label>
         <input
           id="match-date"
           type="datetime-local"
@@ -151,6 +178,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
           required
         />
       </div>
+
       <div className="match-form__row">
         <label>Players</label>
         {(playerIds || []).map((pid, index) => (
@@ -172,17 +200,30 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
           Add player
         </button>
       </div>
+
       <div className="match-form__row">
         <label htmlFor="match-winner">Winner (optional)</label>
-        <select id="match-winner" value={winnerId} onChange={(e) => setWinnerId(e.target.value)}>
-          <option value="">—</option>
-          {(players || []).map((p) => (
-            <option key={p._id} value={p._id}>
-              {p.displayName || p.username}
-            </option>
-          ))}
-        </select>
+        {matchPlayers.length === 0 ? (
+          <p className="match-form__hint" style={{ margin: '0.25rem 0' }}>
+            Add players above to select a winner.
+          </p>
+        ) : (
+          <select
+            id="match-winner"
+            value={winnerId}
+            onChange={(e) => setWinnerId(e.target.value)}
+          >
+            <option value="">— No winner / draw —</option>
+            {matchPlayers.map((p) => (
+              <option key={p._id} value={p._id}>
+                {p.displayName || p.username}
+              </option>
+            ))}
+          </select>
+        )}
+        <small className="match-form__hint">Only players added to this match are shown.</small>
       </div>
+
       <div className="match-form__row">
         <label htmlFor="match-score">Score (optional)</label>
         <input
@@ -193,6 +234,7 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
           placeholder="e.g. 2-1"
         />
       </div>
+
       <div className="match-form__row">
         <label htmlFor="match-notes">Notes (optional)</label>
         <textarea
@@ -202,8 +244,9 @@ function MatchForm({ match, games, players, onSubmit, onCancel }) {
           rows={2}
         />
       </div>
+
       <div className="match-form__actions">
-        <button type="submit">{match ? 'Save' : 'Create'}</button>
+        <button type="submit">{match ? 'Save changes' : 'Create match'}</button>
         {onCancel && (
           <button type="button" onClick={onCancel}>
             Cancel
@@ -236,6 +279,7 @@ MatchForm.propTypes = {
       displayName: PropTypes.string,
     })
   ),
+  currentPlayerId: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func,
 };
