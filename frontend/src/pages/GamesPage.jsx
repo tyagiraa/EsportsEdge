@@ -11,6 +11,7 @@ function GamesPage() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('name-asc');
   const { auth, loading: authLoading } = useAuth();
 
   async function load() {
@@ -18,8 +19,7 @@ function GamesPage() {
     setError('');
     try {
       const data = await getGames();
-      const sorted = [...data].sort((a, b) => a.name.localeCompare(b.name));
-      setGames(sorted);
+      setGames(data);
     } catch (err) {
       setError(err.message || 'Failed to load games');
     } finally {
@@ -33,14 +33,26 @@ function GamesPage() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return games;
-    return games.filter(
-      (g) =>
-        (g.name || '').toLowerCase().includes(q) ||
-        (g.genre || '').toLowerCase().includes(q) ||
-        (g.platform || '').toLowerCase().includes(q)
-    );
-  }, [games, search]);
+    let result = q
+      ? games.filter(
+          (g) =>
+            (g.name || '').toLowerCase().includes(q) ||
+            (g.genre || '').toLowerCase().includes(q) ||
+            (g.platform || '').toLowerCase().includes(q)
+        )
+      : [...games];
+
+    if (sortBy === 'name-asc') {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'name-desc') {
+      result.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (sortBy === 'matches-desc') {
+      result.sort((a, b) => (b.matchCount || 0) - (a.matchCount || 0));
+    } else if (sortBy === 'matches-asc') {
+      result.sort((a, b) => (a.matchCount || 0) - (b.matchCount || 0));
+    }
+    return result;
+  }, [games, search, sortBy]);
 
   function handleCreate(values) {
     createGame(values)
@@ -85,7 +97,7 @@ function GamesPage() {
       </h1>
       {error && <p className="page-error">{error}</p>}
       {loading ? (
-        <p>Loading…</p>
+        <p>Loading&hellip;</p>
       ) : (
         <>
           {!authLoading && !auth && (
@@ -95,11 +107,22 @@ function GamesPage() {
             <input
               type="search"
               className="search-input"
-              placeholder="Search by name, genre, or platform…"
+              placeholder="Search by name, genre, or platform&hellip;"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search games"
             />
+            <select
+              className="sort-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              aria-label="Sort games"
+            >
+              <option value="name-asc">Name A &ndash; Z</option>
+              <option value="name-desc">Name Z &ndash; A</option>
+              <option value="matches-desc">Most matches</option>
+              <option value="matches-asc">Fewest matches</option>
+            </select>
             {auth && (
               <button
                 type="button"
