@@ -78,7 +78,7 @@ function GameForm({ game, onSubmit, onCancel }) {
       <div className="game-form__actions">
         <button type="submit">{game ? 'Save' : 'Create'}</button>
         {onCancel && (
-          <button type="button" onClick={onCancel}>
+          <button type="button" className="btn-cancel" onClick={onCancel}>
             Cancel
           </button>
         )}
