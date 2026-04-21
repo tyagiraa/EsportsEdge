@@ -11,6 +11,7 @@ function PlayersPage() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('name-asc');
   const { auth, loading: authLoading } = useAuth();
 
   async function load() {
@@ -18,10 +19,7 @@ function PlayersPage() {
     setError('');
     try {
       const data = await getPlayers();
-      const sorted = [...data].sort((a, b) =>
-        (a.displayName || a.username || '').localeCompare(b.displayName || b.username || '')
-      );
-      setPlayers(sorted);
+      setPlayers(data);
     } catch (err) {
       setError(err.message || 'Failed to load players');
     } finally {
@@ -35,13 +33,25 @@ function PlayersPage() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return players;
-    return players.filter(
-      (p) =>
-        (p.displayName || '').toLowerCase().includes(q) ||
-        (p.username || '').toLowerCase().includes(q)
-    );
-  }, [players, search]);
+    let result = q
+      ? players.filter(
+          (p) =>
+            (p.displayName || '').toLowerCase().includes(q) ||
+            (p.username || '').toLowerCase().includes(q)
+        )
+      : [...players];
+
+    if (sortBy === 'name-asc') {
+      result.sort((a, b) =>
+        (a.displayName || a.username || '').localeCompare(b.displayName || b.username || '')
+      );
+    } else if (sortBy === 'name-desc') {
+      result.sort((a, b) =>
+        (b.displayName || b.username || '').localeCompare(a.displayName || a.username || '')
+      );
+    }
+    return result;
+  }, [players, search, sortBy]);
 
   function canEdit(p) {
     return auth && String(auth.player?._id) === String(p._id);
@@ -88,18 +98,27 @@ function PlayersPage() {
         <p className="page-error">Login required to create or edit players.</p>
       )}
       {loading ? (
-        <p>Loading…</p>
+        <p>Loading&hellip;</p>
       ) : (
         <>
           <div className="list-controls">
             <input
               type="search"
               className="search-input"
-              placeholder="Search players by name or username…"
+              placeholder="Search by name or username&hellip;"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search players"
             />
+            <select
+              className="sort-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              aria-label="Sort players"
+            >
+              <option value="name-asc">Name A &ndash; Z</option>
+              <option value="name-desc">Name Z &ndash; A</option>
+            </select>
             {auth && (
               <button
                 type="button"
