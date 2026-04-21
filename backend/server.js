@@ -48,24 +48,6 @@ app.use('/api/games', gamesRouter);
 app.use('/api/matches', matchesRouter);
 app.use('/api/stats', statsRouter);
 
-app.get('/api/build-info', (req, res) => {
-  res.json({
-    ok: true,
-    authRoutesMounted: true,
-    feature: 'passport-session',
-  });
-});
-
-app.get('/api/session-test', (req, res) => {
-  req.session.touch();
-  req.session.testValue = String(Date.now());
-  return res.json({
-    ok: true,
-    sessionID: req.sessionID,
-    testValue: req.session.testValue,
-  });
-});
-
 const distDir = path.join(__dirname, 'dist');
 if (fs.existsSync(distDir)) {
   app.use(express.static(distDir));
