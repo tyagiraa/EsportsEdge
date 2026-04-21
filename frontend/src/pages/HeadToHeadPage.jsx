@@ -47,7 +47,8 @@ function HeadToHeadPage() {
 
   return (
     <div>
-      <h1>Head-to-Head Stats</h1>
+      <h1>Head-to-Head</h1>
+      <p className="page-subtitle">Compare two players&rsquo; shared match history and wins.</p>
       {error && <p className="page-error">{error}</p>}
       {loading ? (
         <p>Loading…</p>
