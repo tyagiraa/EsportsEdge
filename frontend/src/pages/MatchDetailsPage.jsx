@@ -49,14 +49,14 @@ function MatchDetailsPage() {
       .catch((err) => setError(err.message));
   }
 
-  if (loading) return <p>Loading…</p>;
+  if (loading) return <p>Loading&hellip;</p>;
   if (error && !match) return <p className="page-error">{error}</p>;
   if (!match) return <p>Match not found.</p>;
 
   const gameName = nameById(games, match.gameId);
   const playerNames = (match.players || []).map((pid) => nameById(players, pid));
   const winnerName = nameById(players, match.winnerId);
-  const dateStr = match.date ? new Date(match.date).toLocaleString() : '—';
+  const dateStr = match.date ? new Date(match.date).toLocaleString() : '\u2014';
 
   return (
     <div>
@@ -76,12 +76,18 @@ function MatchDetailsPage() {
       ) : (
         <>
           <div className="item-actions" style={{ marginBottom: '1rem' }}>
-            <button type="button" onClick={() => setEditing(!editing)}>
+            <button
+              type="button"
+              className={editing ? 'btn-cancel' : ''}
+              onClick={() => setEditing(!editing)}
+            >
               {editing ? 'Cancel' : 'Edit match'}
             </button>
-            <button type="button" className="btn-danger" onClick={handleDelete}>
-              Delete match
-            </button>
+            {!editing && (
+              <button type="button" className="btn-danger" onClick={handleDelete}>
+                Delete match
+              </button>
+            )}
           </div>
           {editing && (
             <MatchForm
