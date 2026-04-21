@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import './RegisterPage.css';
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const { refresh } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -25,6 +27,7 @@ function RegisterPage() {
         displayName: displayName.trim(),
         email: email.trim(),
       });
+      await refresh();
       if (res && res.player && res.player._id) {
         navigate(`/players/${res.player._id}`);
       } else {
