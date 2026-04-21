@@ -46,4 +46,3 @@ BackToTopButton.propTypes = {
 };
 
 export default BackToTopButton;
-

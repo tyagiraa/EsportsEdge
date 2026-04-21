@@ -12,6 +12,7 @@ function RegisterPage() {
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -20,6 +21,7 @@ function RegisterPage() {
       setError('All fields are required.');
       return;
     }
+    setSubmitting(true);
     try {
       const res = await register({
         username: username.trim(),
@@ -35,12 +37,15 @@ function RegisterPage() {
       }
     } catch (err) {
       setError(err.message || 'Registration failed');
+    } finally {
+      setSubmitting(false);
     }
   }
 
   return (
     <div>
-      <h1>Register</h1>
+      <h1>Create account</h1>
+      <p className="page-subtitle">You&rsquo;ll be logged in automatically after registering.</p>
       {error && <p className="page-error">{error}</p>}
       <form className="auth-form form-section" onSubmit={handleSubmit}>
         <div className="auth-form__row">
@@ -50,6 +55,7 @@ function RegisterPage() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            autoComplete="username"
             required
           />
         </div>
@@ -60,16 +66,18 @@ function RegisterPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
             required
           />
         </div>
         <div className="auth-form__row">
-          <label htmlFor="register-displayName">Display Name</label>
+          <label htmlFor="register-displayName">Display name</label>
           <input
             id="register-displayName"
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
+            autoComplete="name"
             required
           />
         </div>
@@ -80,11 +88,14 @@ function RegisterPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
             required
           />
         </div>
         <div className="auth-form__actions">
-          <button type="submit">Create account</button>
+          <button type="submit" disabled={submitting}>
+            {submitting ? 'Creating account…' : 'Create account'}
+          </button>
         </div>
       </form>
     </div>

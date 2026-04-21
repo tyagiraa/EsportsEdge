@@ -153,7 +153,9 @@ a:hover {
   color: var(--text);
   font: inherit;
   font-size: 0.9rem;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
 .search-input::placeholder {
@@ -299,19 +301,72 @@ button {
 
 .matches-filters {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 0.65rem 0.85rem;
   margin-bottom: 1rem;
   padding: 0.85rem;
   background: linear-gradient(180deg, var(--panel2), rgba(2, 6, 23, 0.65));
   border-radius: 12px;
   border: 1px solid rgba(51, 65, 85, 0.9);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.matches-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.matches-filters__field--game {
+  min-width: 11rem;
+  max-width: 19rem;
+}
+
+.matches-filters__field--game > select {
+  width: 100%;
+  min-width: 0;
+}
+
+.matches-filters__field--player {
+  flex: 1 1 6.5rem;
+  min-width: 5.5rem;
+  max-width: 13rem;
+}
+
+.matches-filters__field--year {
+  min-width: 6.25rem;
+}
+
+.matches-filters__field--year > input {
+  min-width: 5.75rem;
+}
+
+.matches-filters__field--month > select {
+  min-width: 5.75rem;
+}
+
+.matches-filters__field--clear {
+  margin-left: auto;
+}
+
+.matches-filters__label-spacer {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: transparent;
+  user-select: none;
+  pointer-events: none;
 }
 
 .matches-filters label {
   font-size: 0.875rem;
   color: var(--muted2);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .matches-filters select,
@@ -324,6 +379,26 @@ button {
   background: rgba(2, 6, 23, 0.55);
   color: var(--text);
   font: inherit;
+}
+
+.matches-filters__field > select,
+.matches-filters__field > input {
+  margin-top: auto;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 2.5rem;
+}
+
+.matches-filters__field--clear > button {
+  margin-top: auto;
+  width: auto;
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .matches-filters button {

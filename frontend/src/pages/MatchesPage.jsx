@@ -91,6 +91,14 @@ function MatchesPage() {
     );
   }, [matches, players, playerSearch]);
 
+  const gamesSortedByName = useMemo(
+    () =>
+      [...games].sort((a, b) =>
+        String(a.name || '').localeCompare(String(b.name || ''), undefined, { sensitivity: 'base' })
+      ),
+    [games]
+  );
+
   function handleCreate(values) {
     createMatch(values)
       .then(() => {
@@ -150,75 +158,89 @@ function MatchesPage() {
       ) : (
         <>
           <section className="matches-filters" aria-label="Filter matches">
-            <label htmlFor="filter-game">Game</label>
-            <select
-              id="filter-game"
-              value={filterGameId}
-              onChange={(e) => setFilterGameId(e.target.value)}
-            >
-              <option value="">All games</option>
-              {games.map((g) => (
-                <option key={g._id} value={g._id}>
-                  {g.name}
-                </option>
-              ))}
-            </select>
+            <div className="matches-filters__field matches-filters__field--game">
+              <label htmlFor="filter-game">Game</label>
+              <select
+                id="filter-game"
+                value={filterGameId}
+                onChange={(e) => setFilterGameId(e.target.value)}
+              >
+                <option value="">All games</option>
+                {gamesSortedByName.map((g) => (
+                  <option key={g._id} value={g._id}>
+                    {g.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <label htmlFor="filter-player">Player</label>
-            <input
-              id="filter-player"
-              type="search"
-              placeholder="Player name&hellip;"
-              value={playerSearch}
-              onChange={(e) => setPlayerSearch(e.target.value)}
-              aria-label="Filter by player name"
-              style={{ minWidth: '120px' }}
-            />
+            <div className="matches-filters__field matches-filters__field--player">
+              <label htmlFor="filter-player">Player</label>
+              <input
+                id="filter-player"
+                type="search"
+                placeholder="Player name&hellip;"
+                value={playerSearch}
+                onChange={(e) => setPlayerSearch(e.target.value)}
+                aria-label="Filter by player name"
+              />
+            </div>
 
-            <label htmlFor="filter-date">Date</label>
-            <input
-              id="filter-date"
-              type="date"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-            />
+            <div className="matches-filters__field matches-filters__field--date">
+              <label htmlFor="filter-date">Date</label>
+              <input
+                id="filter-date"
+                type="date"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+              />
+            </div>
 
-            <label htmlFor="filter-year">Year</label>
-            <input
-              id="filter-year"
-              type="number"
-              min="1970"
-              max="2100"
-              placeholder="YYYY"
-              value={filterYear}
-              onChange={(e) => setFilterYear(e.target.value)}
-            />
+            <div className="matches-filters__field matches-filters__field--year">
+              <label htmlFor="filter-year">Year</label>
+              <input
+                id="filter-year"
+                type="number"
+                min="1970"
+                max="2100"
+                placeholder="YYYY"
+                value={filterYear}
+                onChange={(e) => setFilterYear(e.target.value)}
+              />
+            </div>
 
-            <label htmlFor="filter-month">Month</label>
-            <select
-              id="filter-month"
-              value={filterMonth}
-              onChange={(e) => setFilterMonth(e.target.value)}
-              disabled={!filterYear}
-            >
-              <option value="">All months</option>
-              <option value="1">Jan</option>
-              <option value="2">Feb</option>
-              <option value="3">Mar</option>
-              <option value="4">Apr</option>
-              <option value="5">May</option>
-              <option value="6">Jun</option>
-              <option value="7">Jul</option>
-              <option value="8">Aug</option>
-              <option value="9">Sep</option>
-              <option value="10">Oct</option>
-              <option value="11">Nov</option>
-              <option value="12">Dec</option>
-            </select>
+            <div className="matches-filters__field matches-filters__field--month">
+              <label htmlFor="filter-month">Month</label>
+              <select
+                id="filter-month"
+                value={filterMonth}
+                onChange={(e) => setFilterMonth(e.target.value)}
+                disabled={!filterYear}
+              >
+                <option value="">All months</option>
+                <option value="1">Jan</option>
+                <option value="2">Feb</option>
+                <option value="3">Mar</option>
+                <option value="4">Apr</option>
+                <option value="5">May</option>
+                <option value="6">Jun</option>
+                <option value="7">Jul</option>
+                <option value="8">Aug</option>
+                <option value="9">Sep</option>
+                <option value="10">Oct</option>
+                <option value="11">Nov</option>
+                <option value="12">Dec</option>
+              </select>
+            </div>
 
-            <button type="button" onClick={handleClearFilters}>
-              Clear filters
-            </button>
+            <div className="matches-filters__field matches-filters__field--clear">
+              <span className="matches-filters__label-spacer" aria-hidden="true">
+                &#160;
+              </span>
+              <button type="button" onClick={handleClearFilters}>
+                Clear filters
+              </button>
+            </div>
           </section>
 
           {auth && (
@@ -269,9 +291,7 @@ function MatchesPage() {
           ) : (
             <>
               {filteredMatches.length === 0 && playerSearch && (
-                <p className="muted">
-                  No matches found for player &ldquo;{playerSearch}&rdquo;.
-                </p>
+                <p className="muted">No matches found for player &ldquo;{playerSearch}&rdquo;.</p>
               )}
               <ul className="card-list">
                 {filteredMatches.map((m) => {

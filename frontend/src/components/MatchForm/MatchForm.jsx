@@ -65,9 +65,7 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
 
   const matchPlayers = useMemo(
     () =>
-      (players || []).filter((p) =>
-        playerIds.filter(Boolean).map(String).includes(String(p._id))
-      ),
+      (players || []).filter((p) => playerIds.filter(Boolean).map(String).includes(String(p._id))),
     [players, playerIds]
   );
 
@@ -107,9 +105,7 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
   }
 
   function addPlayer() {
-    const firstUnused = (players || []).find(
-      (p) => !playerIds.map(String).includes(String(p._id))
-    );
+    const firstUnused = (players || []).find((p) => !playerIds.map(String).includes(String(p._id)));
     setPlayerIds([...playerIds, firstUnused?._id ?? players?.[0]?._id ?? '']);
   }
 
@@ -218,11 +214,7 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
             Add players above to select a winner.
           </small>
         ) : (
-          <select
-            id="match-winner"
-            value={winnerId}
-            onChange={(e) => setWinnerId(e.target.value)}
-          >
+          <select id="match-winner" value={winnerId} onChange={(e) => setWinnerId(e.target.value)}>
             <option value="">&mdash; No winner / draw &mdash;</option>
             {matchPlayers.map((p) => (
               <option key={p._id} value={p._id}>

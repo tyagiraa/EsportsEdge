@@ -15,27 +15,20 @@ function Home() {
         <ol className="home-steps">
           <li>
             <strong>Create an account</strong> — click{' '}
-            {auth ? (
-              'Register'
-            ) : (
-              <Link to="/register">Register</Link>
-            )}{' '}
-            in the nav bar. You will be logged in automatically.
+            {auth ? 'Register' : <Link to="/register">Register</Link>} in the nav bar. You will be
+            logged in automatically.
           </li>
           <li>
-            <strong>Add games</strong> — go to{' '}
-            <Link to="/games">Games</Link> and click <em>Add game</em> to create the game titles
-            you play.
+            <strong>Add games</strong> — go to <Link to="/games">Games</Link> and click{' '}
+            <em>Add game</em> to create the game titles you play.
           </li>
           <li>
-            <strong>Log matches</strong> — go to{' '}
-            <Link to="/matches">Matches</Link> and click <em>Add match</em>. Select the game,
-            date, players, and optionally the winner and score.
+            <strong>Log matches</strong> — go to <Link to="/matches">Matches</Link> and click{' '}
+            <em>Add match</em>. Select the game, date, players, and optionally the winner and score.
           </li>
           <li>
-            <strong>View player stats</strong> — go to{' '}
-            <Link to="/players">Players</Link> and click a player&rsquo;s name to see their win
-            rate, total matches, wins, and losses.
+            <strong>View player stats</strong> — go to <Link to="/players">Players</Link> and click
+            a player&rsquo;s name to see their win rate, total matches, wins, and losses.
           </li>
           <li>
             <strong>Compare two players</strong> — go to{' '}
@@ -43,9 +36,8 @@ function Home() {
             <em>Compare</em> to see their shared match history and wins.
           </li>
           <li>
-            <strong>Filter match history</strong> — on the{' '}
-            <Link to="/matches">Matches</Link> page, use the filters at the top to narrow results
-            by game, player name, date, or year.
+            <strong>Filter match history</strong> — on the <Link to="/matches">Matches</Link> page,
+            use the filters at the top to narrow results by game, player name, date, or year.
           </li>
         </ol>
       </section>

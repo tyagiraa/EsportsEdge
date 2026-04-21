@@ -21,7 +21,9 @@
   border: none;
   cursor: pointer;
   font-family: inherit;
-  transition: color 120ms ease, background 120ms ease;
+  transition:
+    color 120ms ease,
+    background 120ms ease;
 }
 
 .navbar__link:hover {
@@ -40,13 +42,22 @@
 }
 
 .navbar__link--profile {
+  margin-left: auto;
+  border: 1px solid rgba(71, 85, 105, 0.82);
+  background: rgba(51, 65, 85, 0.14);
+}
+
+.navbar__link--profile:not(.navbar__link--profile-active):hover {
+  border-color: rgba(100, 116, 139, 0.92);
+}
+
+.navbar__link--profile-active {
   color: #38bdf8;
   background: rgba(56, 189, 248, 0.08);
   border: 1px solid rgba(56, 189, 248, 0.25);
-  margin-left: auto;
 }
 
-.navbar__link--profile:hover {
+.navbar__link--profile-active:hover {
   background: rgba(56, 189, 248, 0.18);
   color: #7dd3fc;
   border-color: rgba(56, 189, 248, 0.5);

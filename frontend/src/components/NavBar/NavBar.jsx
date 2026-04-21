@@ -12,7 +12,7 @@ function NavBar() {
       <NavLink to="/" className="navbar__link" end>
         Home
       </NavLink>
-      <NavLink to="/players" className="navbar__link">
+      <NavLink to="/players" className="navbar__link" end>
         Players
       </NavLink>
       <NavLink to="/games" className="navbar__link">
@@ -25,7 +25,12 @@ function NavBar() {
         Head-to-Head
       </NavLink>
       {auth && auth.player && auth.player._id ? (
-        <NavLink to={`/players/${auth.player._id}`} className="navbar__link navbar__link--profile">
+        <NavLink
+          to={`/players/${auth.player._id}`}
+          className={({ isActive }) =>
+            `navbar__link navbar__link--profile${isActive ? ' navbar__link--profile-active' : ''}`
+          }
+        >
           My Profile
         </NavLink>
       ) : null}

@@ -1,107 +1,48 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { register } from '../utils/api';
-import { useAuth } from '../context/AuthContext';
-import './RegisterPage.css';
-
-function RegisterPage() {
-  const navigate = useNavigate();
-  const { refresh } = useAuth();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError('');
-    if (!username.trim() || !password || !displayName.trim() || !email.trim()) {
-      setError('All fields are required.');
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const res = await register({
-        username: username.trim(),
-        password,
-        displayName: displayName.trim(),
-        email: email.trim(),
-      });
-      await refresh();
-      if (res && res.player && res.player._id) {
-        navigate(`/players/${res.player._id}`);
-      } else {
-        navigate('/players');
-      }
-    } catch (err) {
-      setError(err.message || 'Registration failed');
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  return (
-    <div>
-      <h1>Create account</h1>
-      <p className="page-subtitle">You&rsquo;ll be logged in automatically after registering.</p>
-      {error && <p className="page-error">{error}</p>}
-      <form className="auth-form form-section" onSubmit={handleSubmit}>
-        <div className="auth-form__row">
-          <label htmlFor="register-username">Username</label>
-          <input
-            id="register-username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoComplete="username"
-            required
-          />
-        </div>
-        <div className="auth-form__row">
-          <label htmlFor="register-password">Password</label>
-          <input
-            id="register-password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-            required
-          />
-        </div>
-        <div className="auth-form__row">
-          <label htmlFor="register-displayName">Display name</label>
-          <input
-            id="register-displayName"
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            autoComplete="name"
-            required
-          />
-        </div>
-        <div className="auth-form__row">
-          <label htmlFor="register-email">Email</label>
-          <input
-            id="register-email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            required
-          />
-        </div>
-        <div className="auth-form__actions">
-          <button type="submit" disabled={submitting}>
-            {submitting ? 'Creating account…' : 'Create account'}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+.auth-form__row {
+  margin-bottom: 0.75rem;
 }
 
-RegisterPage.propTypes = {};
+.auth-form__row label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #aaa;
+  font-size: 0.9rem;
+}
 
-export default RegisterPage;
+.auth-form__row input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid rgba(51, 65, 85, 0.9);
+  border-radius: 4px;
+  background: #1a1a1a;
+  color: #ddd;
+  font: inherit;
+}
+
+.auth-form__row input:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.7);
+  outline-offset: 2px;
+  border-color: rgba(56, 189, 248, 0.6);
+}
+
+.auth-form__actions button {
+  box-sizing: border-box;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #233554;
+  color: #e2e8f0;
+  font: inherit;
+}
+
+.auth-form__actions button:hover {
+  background: #2b4a78;
+  color: #fff;
+}
+
+.auth-form__actions button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
