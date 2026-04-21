@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   getMatches,
@@ -32,6 +32,7 @@ function MatchesPage() {
   const [filterDate, setFilterDate] = useState('');
   const [filterYear, setFilterYear] = useState('');
   const [filterMonth, setFilterMonth] = useState('');
+  const [playerSearch, setPlayerSearch] = useState('');
   const { auth, loading: authLoading } = useAuth();
 
   async function loadGamesAndPlayers() {
@@ -81,6 +82,14 @@ function MatchesPage() {
     }
   }, [searchParams, filterGameId]);
 
+  const filteredMatches = useMemo(() => {
+    const q = playerSearch.trim().toLowerCase();
+    if (!q) return matches;
+    return matches.filter((m) =>
+      (m.players || []).some((pid) => nameById(players, pid).toLowerCase().includes(q))
+    );
+  }, [matches, players, playerSearch]);
+
   function handleCreate(values) {
     createMatch(values)
       .then(() => {
@@ -112,6 +121,7 @@ function MatchesPage() {
     setFilterDate('');
     setFilterYear('');
     setFilterMonth('');
+    setPlayerSearch('');
     setSearchParams({});
   }
 
@@ -119,7 +129,13 @@ function MatchesPage() {
     <div>
       <h1>
         Matches
-        {!loading && matches.length > 0 && <span className="page-count"> ({matches.length})</span>}
+        {!loading && (
+          <span className="page-count">
+            {playerSearch || filterGameId || filterDate || filterYear
+              ? `${filteredMatches.length} / ${matches.length}`
+              : matches.length}
+          </span>
+        )}
       </h1>
       {error && <p className="page-error">{error}</p>}
       {!authLoading && !auth && (
@@ -129,7 +145,7 @@ function MatchesPage() {
         <p>Loading…</p>
       ) : (
         <>
-          <section className="matches-filters">
+          <section className="matches-filters" aria-label="Filter matches">
             <label htmlFor="filter-game">Game</label>
             <select
               id="filter-game"
@@ -143,6 +159,18 @@ function MatchesPage() {
                 </option>
               ))}
             </select>
+
+            <label htmlFor="filter-player">Player</label>
+            <input
+              id="filter-player"
+              type="search"
+              placeholder="Player name…"
+              value={playerSearch}
+              onChange={(e) => setPlayerSearch(e.target.value)}
+              aria-label="Filter by player name"
+              style={{ minWidth: '120px' }}
+            />
+
             <label htmlFor="filter-date">Date</label>
             <input
               id="filter-date"
@@ -150,6 +178,7 @@ function MatchesPage() {
               value={filterDate}
               onChange={(e) => setFilterDate(e.target.value)}
             />
+
             <label htmlFor="filter-year">Year</label>
             <input
               id="filter-year"
@@ -160,6 +189,7 @@ function MatchesPage() {
               value={filterYear}
               onChange={(e) => setFilterYear(e.target.value)}
             />
+
             <label htmlFor="filter-month">Month</label>
             <select
               id="filter-month"
@@ -181,11 +211,13 @@ function MatchesPage() {
               <option value="11">Nov</option>
               <option value="12">Dec</option>
             </select>
+
             <button type="button" onClick={handleClearFilters}>
               Clear filters
             </button>
           </section>
-          <p>
+
+          <div className="list-controls">
             {auth && (
               <button
                 type="button"
@@ -197,13 +229,15 @@ function MatchesPage() {
                 Add match
               </button>
             )}
-          </p>
+          </div>
+
           {auth && showForm && !editing && (
             <section className="form-section">
               <h2>New match</h2>
               <MatchForm
                 games={games}
                 players={players}
+                currentPlayerId={auth?.player?._id}
                 onSubmit={handleCreate}
                 onCancel={() => setShowForm(false)}
               />
@@ -221,36 +255,46 @@ function MatchesPage() {
               />
             </section>
           )}
+
           {loading ? (
             <p>Loading matches…</p>
           ) : (
-            <ul className="card-list">
-              {matches.map((m) => {
-                const gameName = nameById(games, m.gameId);
-                const playerNames = (m.players || []).map((pid) => nameById(players, pid));
-                const winnerName = nameById(players, m.winnerId);
-                return (
-                  <li key={m._id}>
-                    <MatchCard
-                      match={m}
-                      gameName={gameName}
-                      playerNames={playerNames}
-                      winnerName={winnerName}
-                    />
-                    {auth && (
-                      <div className="item-actions">
-                        <button type="button" onClick={() => setEditing(m)}>
-                          Edit
-                        </button>
-                        <button type="button" onClick={() => handleDelete(m._id)}>
-                          Delete
-                        </button>
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
+            <>
+              {filteredMatches.length === 0 && playerSearch && (
+                <p className="muted">No matches found for player &ldquo;{playerSearch}&rdquo;.</p>
+              )}
+              <ul className="card-list">
+                {filteredMatches.map((m) => {
+                  const gameName = nameById(games, m.gameId);
+                  const playerNames = (m.players || []).map((pid) => nameById(players, pid));
+                  const winnerName = nameById(players, m.winnerId);
+                  return (
+                    <li key={m._id}>
+                      <MatchCard
+                        match={m}
+                        gameName={gameName}
+                        playerNames={playerNames}
+                        winnerName={winnerName}
+                      />
+                      {auth && (
+                        <div className="item-actions">
+                          <button type="button" onClick={() => setEditing(m)}>
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-danger"
+                            onClick={() => handleDelete(m._id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
           )}
         </>
       )}
