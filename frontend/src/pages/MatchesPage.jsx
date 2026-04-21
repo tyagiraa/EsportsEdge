@@ -137,12 +137,15 @@ function MatchesPage() {
           </span>
         )}
       </h1>
+      <p className="page-subtitle">
+        Log match results here. Use filters to browse history by game, player, or date.
+      </p>
       {error && <p className="page-error">{error}</p>}
       {!authLoading && !auth && (
         <p className="page-error">Login required to create, edit, or delete matches.</p>
       )}
       {loading && !games.length ? (
-        <p>Loading…</p>
+        <p>Loading&hellip;</p>
       ) : (
         <>
           <section className="matches-filters" aria-label="Filter matches">
@@ -164,7 +167,7 @@ function MatchesPage() {
             <input
               id="filter-player"
               type="search"
-              placeholder="Player name…"
+              placeholder="Player name&hellip;"
               value={playerSearch}
               onChange={(e) => setPlayerSearch(e.target.value)}
               aria-label="Filter by player name"
@@ -217,23 +220,27 @@ function MatchesPage() {
             </button>
           </section>
 
-          <div className="list-controls">
-            {auth && (
+          {auth && (
+            <div className="add-match-bar">
               <button
                 type="button"
+                className="btn-add-match"
                 onClick={() => {
                   setShowForm(true);
                   setEditing(null);
                 }}
               >
-                Add match
+                + Log a match
               </button>
-            )}
-          </div>
+              <span className="add-match-hint">
+                Select a game, add the players who participated, and optionally set a winner.
+              </span>
+            </div>
+          )}
 
           {auth && showForm && !editing && (
             <section className="form-section">
-              <h2>New match</h2>
+              <h2>Log a new match</h2>
               <MatchForm
                 games={games}
                 players={players}
@@ -257,11 +264,13 @@ function MatchesPage() {
           )}
 
           {loading ? (
-            <p>Loading matches…</p>
+            <p>Loading matches&hellip;</p>
           ) : (
             <>
               {filteredMatches.length === 0 && playerSearch && (
-                <p className="muted">No matches found for player &ldquo;{playerSearch}&rdquo;.</p>
+                <p className="muted">
+                  No matches found for player &ldquo;{playerSearch}&rdquo;.
+                </p>
               )}
               <ul className="card-list">
                 {filteredMatches.map((m) => {
