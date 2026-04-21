@@ -43,7 +43,7 @@ function MatchDetailsPage() {
   }
 
   function handleDelete() {
-    if (!window.confirm('Delete this match?')) return;
+    if (!window.confirm('Delete this match? This cannot be undone.')) return;
     deleteMatch(id)
       .then(() => navigate('/matches'))
       .catch((err) => setError(err.message));
@@ -70,16 +70,17 @@ function MatchDetailsPage() {
       {winnerName && <p>Winner: {winnerName}</p>}
       {match.score && <p>Score: {match.score}</p>}
       {match.notes && <p>Notes: {match.notes}</p>}
+
       {!authLoading && !auth ? (
         <p className="page-error">Login required to edit or delete this match.</p>
       ) : (
         <>
           <div className="item-actions" style={{ marginBottom: '1rem' }}>
             <button type="button" onClick={() => setEditing(!editing)}>
-              {editing ? 'Cancel edit' : 'Edit'}
+              {editing ? 'Cancel' : 'Edit match'}
             </button>
-            <button type="button" onClick={handleDelete}>
-              Delete
+            <button type="button" className="btn-danger" onClick={handleDelete}>
+              Delete match
             </button>
           </div>
           {editing && (
