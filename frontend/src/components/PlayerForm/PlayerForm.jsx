@@ -85,7 +85,7 @@ function PlayerForm({ player, onSubmit, onCancel }) {
       <div className="player-form__actions">
         <button type="submit">{player ? 'Save' : 'Create'}</button>
         {onCancel && (
-          <button type="button" onClick={onCancel}>
+          <button type="button" className="btn-cancel" onClick={onCancel}>
             Cancel
           </button>
         )}
