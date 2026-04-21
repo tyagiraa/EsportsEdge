@@ -41,7 +41,7 @@ function PlayerProfilePage() {
       .catch((err) => setError(err.message));
   }
 
-  if (loading) return <p>Loading…</p>;
+  if (loading) return <p>Loading&hellip;</p>;
   if (error && !player) return <p className="page-error">{error}</p>;
   if (!player) return <p>Player not found.</p>;
 
@@ -65,12 +65,18 @@ function PlayerProfilePage() {
       {!authLoading && canEdit() && (
         <>
           <div className="item-actions" style={{ marginBottom: '1rem' }}>
-            <button type="button" onClick={() => setEditing(!editing)}>
+            <button
+              type="button"
+              className={editing ? 'btn-cancel' : ''}
+              onClick={() => setEditing(!editing)}
+            >
               {editing ? 'Cancel' : 'Edit profile'}
             </button>
-            <button type="button" className="btn-danger" onClick={handleDelete}>
-              Delete profile
-            </button>
+            {!editing && (
+              <button type="button" className="btn-danger" onClick={handleDelete}>
+                Delete profile
+              </button>
+            )}
           </div>
           {editing && (
             <PlayerForm
