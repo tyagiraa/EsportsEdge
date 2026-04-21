@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { getGames, createGame, updateGame, deleteGame } from '../utils/api';
 import GameCard from '../components/GameCard/GameCard';
 import GameForm from '../components/GameForm/GameForm';
@@ -10,6 +10,7 @@ function GamesPage() {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [search, setSearch] = useState('');
   const { auth, loading: authLoading } = useAuth();
 
   async function load() {
@@ -29,6 +30,17 @@ function GamesPage() {
   useEffect(() => {
     load();
   }, []);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return games;
+    return games.filter(
+      (g) =>
+        (g.name || '').toLowerCase().includes(q) ||
+        (g.genre || '').toLowerCase().includes(q) ||
+        (g.platform || '').toLowerCase().includes(q)
+    );
+  }, [games, search]);
 
   function handleCreate(values) {
     createGame(values)
@@ -50,7 +62,12 @@ function GamesPage() {
   }
 
   function handleDelete(id) {
-    if (!window.confirm('Delete this game?')) return;
+    if (
+      !window.confirm(
+        'Delete this game? All matches for this game will also be deleted. This cannot be undone.'
+      )
+    )
+      return;
     deleteGame(id)
       .then(() => load())
       .catch((err) => setError(err.message));
@@ -60,7 +77,11 @@ function GamesPage() {
     <div>
       <h1>
         Games
-        {!loading && games.length > 0 && <span className="page-count"> ({games.length})</span>}
+        {!loading && (
+          <span className="page-count">
+            {search ? `${filtered.length} / ${games.length}` : games.length}
+          </span>
+        )}
       </h1>
       {error && <p className="page-error">{error}</p>}
       {loading ? (
@@ -70,7 +91,15 @@ function GamesPage() {
           {!authLoading && !auth && (
             <p className="page-error">Login required to create, edit, or delete games.</p>
           )}
-          <p>
+          <div className="list-controls">
+            <input
+              type="search"
+              className="search-input"
+              placeholder="Search by name, genre, or platform…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search games"
+            />
             {auth && (
               <button
                 type="button"
@@ -82,7 +111,8 @@ function GamesPage() {
                 Add game
               </button>
             )}
-          </p>
+          </div>
+
           {auth && showForm && !editing && (
             <section className="form-section">
               <h2>New game</h2>
@@ -95,8 +125,13 @@ function GamesPage() {
               <GameForm game={editing} onSubmit={handleUpdate} onCancel={() => setEditing(null)} />
             </section>
           )}
+
+          {filtered.length === 0 && search && (
+            <p className="muted">No games match &ldquo;{search}&rdquo;.</p>
+          )}
+
           <ul className="card-list">
-            {games.map((g) => (
+            {filtered.map((g) => (
               <li key={g._id}>
                 <GameCard game={g} />
                 {auth && (
@@ -104,7 +139,11 @@ function GamesPage() {
                     <button type="button" onClick={() => setEditing(g)}>
                       Edit
                     </button>
-                    <button type="button" onClick={() => handleDelete(g._id)}>
+                    <button
+                      type="button"
+                      className="btn-danger"
+                      onClick={() => handleDelete(g._id)}
+                    >
                       Delete
                     </button>
                   </div>
