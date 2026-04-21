@@ -87,7 +87,12 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
     e.preventDefault();
     setError('');
     const selectedPlayers = playerIds.filter(Boolean);
-    if (!gameId.trim() || !date.trim() || !Array.isArray(playerIds) || selectedPlayers.length === 0) {
+    if (
+      !gameId.trim() ||
+      !date.trim() ||
+      !Array.isArray(playerIds) ||
+      selectedPlayers.length === 0
+    ) {
       setError('Game, date, and at least one player are required.');
       return;
     }
@@ -102,10 +107,10 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
   }
 
   function addPlayer() {
-    const firstUnusedPlayer = (players || []).find(
+    const firstUnused = (players || []).find(
       (p) => !playerIds.map(String).includes(String(p._id))
     );
-    setPlayerIds([...playerIds, firstUnusedPlayer?._id ?? players?.[0]?._id ?? '']);
+    setPlayerIds([...playerIds, firstUnused?._id ?? players?.[0]?._id ?? '']);
   }
 
   function removePlayer(index) {
@@ -137,7 +142,7 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
           type="text"
           value={gameQuery}
           onChange={(e) => handleGameQueryChange(e.target.value)}
-          placeholder="Type game name…"
+          placeholder="Type to search games&hellip;"
           list="match-game-options"
           autoComplete="off"
         />
@@ -164,7 +169,7 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
           ))}
         </select>
         <small className="match-form__hint">
-          Type above to narrow the list, then confirm from the dropdown.
+          Type above to narrow the list, then confirm your game from the dropdown.
         </small>
       </div>
 
@@ -181,6 +186,11 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
 
       <div className="match-form__row">
         <label>Players</label>
+        {!match && currentPlayerId && (
+          <small className="match-form__hint">
+            You have been added as a player automatically. Add any other participants below.
+          </small>
+        )}
         {(playerIds || []).map((pid, index) => (
           <div key={index} className="match-form__player-row">
             <select value={pid} onChange={(e) => setPlayerAt(index, e.target.value)} required>
@@ -204,16 +214,16 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
       <div className="match-form__row">
         <label htmlFor="match-winner">Winner (optional)</label>
         {matchPlayers.length === 0 ? (
-          <p className="match-form__hint" style={{ margin: '0.25rem 0' }}>
+          <small className="match-form__hint" style={{ display: 'block', marginTop: '0.25rem' }}>
             Add players above to select a winner.
-          </p>
+          </small>
         ) : (
           <select
             id="match-winner"
             value={winnerId}
             onChange={(e) => setWinnerId(e.target.value)}
           >
-            <option value="">— No winner / draw —</option>
+            <option value="">&mdash; No winner / draw &mdash;</option>
             {matchPlayers.map((p) => (
               <option key={p._id} value={p._id}>
                 {p.displayName || p.username}
@@ -248,7 +258,7 @@ function MatchForm({ match, games, players, currentPlayerId, onSubmit, onCancel 
       <div className="match-form__actions">
         <button type="submit">{match ? 'Save changes' : 'Create match'}</button>
         {onCancel && (
-          <button type="button" onClick={onCancel}>
+          <button type="button" className="btn-cancel" onClick={onCancel}>
             Cancel
           </button>
         )}
