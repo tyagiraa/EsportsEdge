@@ -11,6 +11,7 @@ import {
 import MatchCard from '../components/MatchCard/MatchCard';
 import MatchForm from '../components/MatchForm/MatchForm';
 import { useAuth } from '../context/AuthContext';
+import BackToTopButton from '../components/BackToTopButton/BackToTopButton';
 
 function nameById(arr, id) {
   if (!id || !arr) return '';
@@ -307,6 +308,7 @@ function MatchesPage() {
           )}
         </>
       )}
+      <BackToTopButton />
     </div>
   );
 }

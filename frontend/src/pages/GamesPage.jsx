@@ -3,6 +3,7 @@ import { getGames, createGame, updateGame, deleteGame } from '../utils/api';
 import GameCard from '../components/GameCard/GameCard';
 import GameForm from '../components/GameForm/GameForm';
 import { useAuth } from '../context/AuthContext';
+import BackToTopButton from '../components/BackToTopButton/BackToTopButton';
 
 function GamesPage() {
   const [games, setGames] = useState([]);
@@ -176,6 +177,7 @@ function GamesPage() {
           </ul>
         </>
       )}
+      <BackToTopButton />
     </div>
   );
 }

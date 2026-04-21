@@ -3,6 +3,7 @@ import { getPlayers, createPlayer, updatePlayer, deletePlayer } from '../utils/a
 import PlayerCard from '../components/PlayerCard/PlayerCard';
 import PlayerForm from '../components/PlayerForm/PlayerForm';
 import { useAuth } from '../context/AuthContext';
+import BackToTopButton from '../components/BackToTopButton/BackToTopButton';
 
 function PlayersPage() {
   const [players, setPlayers] = useState([]);
@@ -176,6 +177,7 @@ function PlayersPage() {
           </ul>
         </>
       )}
+      <BackToTopButton />
     </div>
   );
 }
