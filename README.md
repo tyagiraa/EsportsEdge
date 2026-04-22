@@ -11,7 +11,7 @@ Raagini Tyagi, Rahul Nayak
 
 **Live Demo Website:** [EsportsEdge – Live Deployment](https://esportsedge-uhom.onrender.com/)
 
-**Demo Video:** [EsportsEdge – Project Demonstration Video](https://drive.google.com/file/d/1ZXAQDlhSiGEN2pS0MGdW3-dGB7MeoB21/view?usp=drive_link)
+**Demo Video:** [EsportsEdge – Project Demonstration Video](https://drive.google.com/file/d/1yHjXb-zWcyAAY9tKTK1OTJsm_K9XxxlS/view?usp=sharing)
 
 **Design Document:** [EsportsEdge – Design Document](./EsportsEdge_Design_Document.pdf)
 
